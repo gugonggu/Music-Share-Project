@@ -1,0 +1,16 @@
+.none{
+    display: none;
+}
+
+.navWidth{
+    width: 270px;
+}
+
+.blurDivStyle{
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+    background-color: rgba(85, 85, 85, 0.3);
+    position: absolute;
+    top: 0px;
+}

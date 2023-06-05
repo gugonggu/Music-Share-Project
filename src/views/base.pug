@@ -1,0 +1,40 @@
+doctype html 
+html(lang="ko")
+    head 
+        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+        link(rel="stylesheet", href="/assets/css/styles.css")
+        title #{pageTitle} | Chillin on the beat
+    body 
+        nav.none
+            div.navTopDiv
+                button.closeNavBtn 
+                    i.fa-solid.fa-bars.fa-2x.navIcon 
+                span.navTitle Chillin on the beat 
+            ul 
+                li#navHomeBtn 
+                    i.fa-solid.fa-house.fa-xl 
+                    span 홈
+                li#myPlayListBtn
+                    i.fa-solid.fa-list.fa-xl 
+                    span 내 재생목록
+                li#otherRecommendBtn
+                    i.fa-solid.fa-thumbs-up.fa-xl 
+                    span 다른 유저의 추천 음악
+                li#navHomeBtn 
+                    i.fa-solid.fa-magnifying-glass.fa-xl 
+                    span 검색
+        main 
+            header 
+                button.openNavBtn
+                    i.fa-solid.fa-bars.fa-2x 
+                div.pageTitleDiv
+                    span#mainTitle Chillin on the beat 
+                div.profileDiv.none 
+                    span 홍천 정
+                    div.progilephotoDiv
+                        i.fa-solid.fa-circle-user.fa-lg 
+                div.loginDiv
+                    span 로그인
+            block section
+        div.blurDiv
+    script(src="/assets/js/main.js")

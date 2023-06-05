@@ -2,10 +2,28 @@
 @import "./config/reset.scss";
 
 // Components
-
+@import "./components/header.scss";
+@import "./components/navbar.scss";
+@import "./components/navbarjs.scss";
 
 // Screens
 
 
+// Font
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Open+Sans&display=swap');
+
 // Defaults
 
+body{
+    &::-webkit-scrollbar{
+        display: none;
+    }
+
+    font-family: 'Open Sans', sans-serif;
+
+    background: #3a6186;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #89253e, #3a6186);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #89253e, #3a6186); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}

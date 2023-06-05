@@ -4,9 +4,9 @@ import session from "express-session";
 import flash from "express-flash";
 import MongoStore from "connect-mongo";
 import rootRouter from "./routers/rootRouter";
+import musicRouter from "./routers/musicRouter";
 import userRouter from "./routers/userRouter";
 import { localsMiddleware } from "./middlewares";
-import musicRouter from "./routers/musicRouter";
 
 const app = express();
 const logger = morgan("dev");
