@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         main: BASE_JS + "main.js",
     },
+    watch: true,
     plugins: [new MiniCssExtractPlugin({
         filename: "css/styles.css",
     })],

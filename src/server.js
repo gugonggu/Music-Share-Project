@@ -29,6 +29,7 @@ app.use(session({
 app.use(flash());
 
 app.use("/uploads", express.static("uploads"));
+app.use("/assets", express.static("assets"));
 app.use("/", rootRouter);
 app.use("/music", musicRouter);
 app.use("/users", userRouter);
