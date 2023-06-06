@@ -1,0 +1,11 @@
+.empty__message {
+    margin-bottom: 50px;
+    font-size: 18px;
+}
+main{
+    .music-grid {
+        display: grid;
+        gap: 50px;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

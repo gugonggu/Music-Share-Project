@@ -1,0 +1,20 @@
+.music-mixin{
+    .music-mixin__thumb{
+        height: 140px;
+        border-radius: 7px;
+        width: 100%;
+        background-color: ivory;
+    }
+    .music-mixin__data{
+        padding: 0px 15px;
+        .music-mixin__title{
+            font-size: 18px;
+            display: block;
+            margin-top: 10px;
+        }
+        .music-mixin__recommender{
+            margin-top: 5px;
+            font-size: 12px;
+        }
+    }
+}

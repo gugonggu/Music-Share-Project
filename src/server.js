@@ -27,6 +27,7 @@ app.use(session({
 }));
 
 app.use(flash());
+app.use(localsMiddleware);
 
 app.use("/uploads", express.static("uploads"));
 app.use("/assets", express.static("assets"));

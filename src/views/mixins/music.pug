@@ -1,0 +1,8 @@
+mixin music(music)
+    a(href=`/music/${music._id}`).music-mixin
+        div.music-mixin__thumb
+        div.music-mixin__data
+            span.music-mixin__artist=music.artist
+            span.music-mixin__title=music.title
+            div.music-mixin__recommender
+                span #{music.recommender.name}

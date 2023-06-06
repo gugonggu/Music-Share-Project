@@ -1,0 +1,12 @@
+extends base.pug
+
+block section 
+    if errorMessage 
+        span=errorMessage 
+    form(method="POST")
+        input(name="email", type="email", required, placeholder="이메일")
+        input(name="password", type="password", required, placeholder="비밀번호")
+        input(type="submit", value="로그인")
+    div 
+        span 계정을 만들지 않으셨나요?
+        a(href="/join") 계정 만들기 &rarr;

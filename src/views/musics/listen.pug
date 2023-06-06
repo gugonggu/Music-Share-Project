@@ -1,0 +1,20 @@
+extends ../base.pug
+
+block section
+    iframe(type='text/html', width='560', height='315',
+        src=music.musicSrc,
+        title=music.title,
+        frameborder='0',
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+        allowfullscreen
+        )
+
+    div.music__data
+        p.music__artist=music.artist
+        p.music__title=music.title
+        small.music__recommender Recommended by
+            a(href=`users/${music.recommender._id}`)=music.recommender.name
+        if String(music.recommender._id) === String(loggedInUser._id)
+            a(href=`${music.id}/edit`) Edit Music &rarr;
+            br
+            a(href=`${music.id}/delete`) Delete Music &rarr;

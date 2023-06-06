@@ -1,0 +1,11 @@
+extends ../base.pug
+include ../mixins/music
+
+block section
+    div.profile__data
+        h3=user.name
+    div.music-grid
+        each music in user.musics
+            +music(music)
+        else
+            span.empty__message 음악이 없습니다.

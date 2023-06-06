@@ -1,0 +1,9 @@
+extends ../base.pug
+
+block section 
+    form(method="POST")
+        input(name="name", type="text", required, placeholder="이름", value=loggedInUser.name)
+        input(name="username", type="text", required, placeholder="닉네임", value=loggedInUser.username)
+        input(name="email", type="email", required, placeholder="이메일", value=loggedInUser.email)
+        input(type="submit", value="수정 완료")
+    a(href="change-password") 비밀번호 변경 &rarr;
