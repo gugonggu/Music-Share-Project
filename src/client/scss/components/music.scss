@@ -1,4 +1,5 @@
 .music-mixin{
+    text-decoration: none;
     .music-mixin__thumb{
         height: 140px;
         border-radius: 7px;
@@ -6,15 +7,13 @@
         background-color: ivory;
     }
     .music-mixin__data{
-        padding: 0px 15px;
+        color: black;
+        margin-top: 5px;
         .music-mixin__title{
-            font-size: 18px;
-            display: block;
-            margin-top: 10px;
+            margin-bottom: 20px;
         }
-        .music-mixin__recommender{
-            margin-top: 5px;
-            font-size: 12px;
+        .music-mixin__artist{
+            margin-bottom: 20px;
         }
     }
 }

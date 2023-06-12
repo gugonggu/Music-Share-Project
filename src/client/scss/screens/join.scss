@@ -1,0 +1,27 @@
+.joinFormDiv{
+    display: flex;
+    justify-content: center;
+}
+
+.joinform{
+    width: 500px;
+    background-color: beige;
+    span{
+        
+    }
+    input{
+        display: block;
+        border: none;
+        width: 100%;
+        height: 50px;
+        padding: 0px;
+        margin-bottom: 10px;
+        background-color: transparent;
+        border-bottom: 1px solid black;
+        &[type="submit"]{
+            background-color: lightcyan;
+            cursor: pointer;
+            border-top: 1px solid black;
+        }
+    }
+}
