@@ -1,39 +1,49 @@
 doctype html 
 html(lang="ko")
-    head 
-        link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    head
+        link(
+            rel="stylesheet",
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        )
         link(rel="stylesheet", href="/assets/css/styles.css")
-        title #{pageTitle} | Chillin on the beat
-    body 
+        title #{ pageTitle } | Chillin on the beat
+    body
         nav.none
-            div.navTopDiv
-                button.closeNavBtn 
-                    i.fa-solid.fa-bars.fa-2x.navIcon 
-                span.navTitle Chillin on the beat 
-            a(href="/")#navHomeBtn 
-                i.fa-solid.fa-house.fa-xl 
+            .navTopDiv
+                button.closeNavBtn
+                    i.fa-solid.fa-bars.fa-2x.navIcon
+                span.navTitle Chillin on the beat
+            hr
+            a#navHomeBtn(href="/")
+                i.fa-solid.fa-house.fa-lg
                 span 홈
-            a(href=`/users/${loggedInUser._id}`)#myPlayListBtn
-                i.fa-solid.fa-list.fa-xl 
-                span 내 재생목록
-            a(href="")#otherRecommendBtn
-                i.fa-solid.fa-thumbs-up.fa-xl 
-                span 다른 유저의 추천 음악
-            a(href="/search")#navHomeBtn 
-                i.fa-solid.fa-magnifying-glass.fa-xl 
+            a#navHomeBtn(href="/search")
+                i.fa-solid.fa-magnifying-glass.fa-xl
                 span 검색
-        main 
-            header 
+            hr
+            if loggedIn
+                a#myPlayListBtn(href=`/users/${loggedInUser._id}`)
+                    i.fa-solid.fa-thumbs-up.fa-xl
+                    span 내가 추천한 음악
+            a#otherRecommendBtn(href="/music/others-playlist")
+                i.fa-solid.fa-users.fa-lg
+                span 다른 유저의 추천 음악
+            a(href="/") 
+                i.fa-solid.fa-list.fa-xl
+                span 플레이리스트
+        main
+            header
                 button.openNavBtn
-                    i.fa-solid.fa-bars.fa-2x 
-                a(href="/").pageTitleA Chillin on the beat 
+                    i.fa-solid.fa-bars.fa-2x
+                a.pageTitleA(href="/") Chillin on the beat
                 if loggedIn
-                    a(href="/music/upload").uploadA 음악 추천하기
-                    a(href="/users/edit-profile").editprofA 계정 관리
-                    a(href="/users/logout").logoutA 로그아웃
+                    a.uploadA(href="/music/upload") 음악 추천하기
+                    a.editprofA(href="/users/edit-profile") 계정 관리
+                    a.logoutA(href="/users/logout") 로그아웃
                 else
-                    a(href="/join").joinA 가입
-                    a(href="/login").loginDiv 로그인
+                    a.joinA(href="/join") 가입
+                    a.loginDiv(href="/login") 로그인
             block section
-        div.blurDiv
+        .blurDiv
     script(src="/assets/js/main.js")
+    block scripts

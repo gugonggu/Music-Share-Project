@@ -6,11 +6,15 @@ const BASE_JS = "./src/client/js/";
 module.exports = {
     entry: {
         main: BASE_JS + "main.js",
+        controlYoutubeVideo: BASE_JS + "controlYoutubeVideo.js",
     },
+    mode: "development",
     watch: true,
-    plugins: [new MiniCssExtractPlugin({
-        filename: "css/styles.css",
-    })],
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: "css/styles.css",
+        }),
+    ],
     output: {
         filename: "js/[name].js",
         path: path.resolve(__dirname, "assets"),
@@ -23,7 +27,9 @@ module.exports = {
                 use: {
                     loader: "babel-loader",
                     options: {
-                        presets: [["@babel/preset-env", {targets: "defaults"}]]
+                        presets: [
+                            ["@babel/preset-env", { targets: "defaults" }],
+                        ],
                     },
                 },
             },

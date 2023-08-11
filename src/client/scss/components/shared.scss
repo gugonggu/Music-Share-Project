@@ -2,12 +2,8 @@
     margin-bottom: 50px;
     font-size: 18px;
 }
-main{
+main {
     .music-grid {
-        display: grid;
-        gap: 50px;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        margin-left: 50px;
-        margin-top: 50px;
+        display: flex;
     }
 }

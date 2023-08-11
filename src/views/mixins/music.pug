@@ -1,9 +1,11 @@
 mixin music(music)
-    a(href=`/music/${music._id}`).music-mixin
-        div.music-mixin__thumb
-        div.music-mixin__data
-            span.music-mixin__title=music.title
-            br
-            span.music-mixin__artist=music.artist
-            div.music-mixin__recommender
-                span #{music.recommender.name}
+    a.music-mixin(href=`/music/${music._id}`)
+        img(src=music.musicInfo.musicThumbnailSrc, alt="")
+        .music-mixin__data
+            span.music-mixin__title #{ music.title }
+            span 
+            span -
+            span 
+            span.music-mixin__artist #{ music.artist }
+            .music-mixin__recommender
+                span #{ music.recommender.username }

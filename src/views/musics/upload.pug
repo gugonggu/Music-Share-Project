@@ -1,12 +1,12 @@
 extends ../base.pug
 
 block section
-    if errorMessage 
-        span=errorMessage
+    if errorMessage
+        span= errorMessage
     form(method="POST")
         input(name="title", type="text", required, placeholder="제목")
         input(name="artist", type="text", required, placeholder="아티스트")
-        input(name="musicSrc", type="text", required, placeholder="유튜브 임베드 주소")
+        input(name="musicId", type="text", required, placeholder="유튜브 영상 ID")
         input(name="genre", type="text", required, placeholder="장르 (,로 구분)")
         input(name="tags", type="text", required, placeholder="태그 (,로 구분)")
         input(type="submit", value="음악 추천")

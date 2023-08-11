@@ -1,19 +1,22 @@
-.music-mixin{
+.music-mixin {
     text-decoration: none;
-    .music-mixin__thumb{
-        height: 140px;
-        border-radius: 7px;
-        width: 100%;
-        background-color: ivory;
+    width: 300px;
+    padding: 10px;
+    border: 1px solid transparent;
+    img {
+        max-width: 100%;
     }
-    .music-mixin__data{
-        color: black;
+    .music-mixin__data {
+        color: white;
         margin-top: 5px;
-        .music-mixin__title{
-            margin-bottom: 20px;
+        .music-mixin__recommender {
+            margin-top: 5px;
         }
-        .music-mixin__artist{
-            margin-bottom: 20px;
-        }
+    }
+
+    &:hover {
+        background-color: rgba(83, 85, 86, 0.5);
+        border-radius: 10px;
+        border: 1px solid rgba(54, 54, 54, 0.8);
     }
 }
