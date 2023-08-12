@@ -4,6 +4,7 @@ const musicSchema = new mongoose.Schema({
     title: { type: String, required: true, trim: true },
     artist: { type: String, required: true, trim: true },
     musicInfo: {
+        musicUrl: { type: String, required: true, trim: true },
         musicId: { type: String, required: true, trim: true },
         musicSrc: { type: String, required: true, trim: true },
         musicThumbnailSrc: { type: String, required: true, trim: true },
@@ -30,6 +31,16 @@ musicSchema.static("formatTags", function (tags) {
 
 musicSchema.static("formatGenre", function (genre) {
     return genre.split(",").map((word) => (word ? word : `${word}`));
+});
+
+musicSchema.static("getYoutubeVideoId", function (url) {
+    const regExp =
+        /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+        return match[2];
+    }
+    return "";
 });
 
 const Music = mongoose.model("Music", musicSchema);

@@ -1,27 +1,91 @@
 extends ../base.pug
+include ../mixins/musicVertical.pug
 
 block section
-    iframe(
-        type="text/html",
-        width="560",
-        height="315",
-        src=music.musicInfo.musicSrc,
-        title=music.title,
-        frameborder="0",
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
-        allowfullscreen
-    )
+    .music__wrap
+        .music__control-wrap
+            .music__control-top
+                #backBtn.music__icon-wrap
+                    i.fa-solid.fa-arrow-left.fa-xl.music__icon-hover
+                if String(music.recommender._id) === String(loggedInUser._id)
+                    a.music__verifiedButton(href=`${music.id}/edit`) Edit Music &rarr;
+                    a.music__verifiedButton(href=`${music.id}/delete`) Delete Music &rarr;
+                else
+                    .music__control-top-recommender
+                        a(href=`/users/${music.recommender._id}`) #{ music.recommender.username }
+                        | 님이 추천함
+                #moreBtn.music__icon-wrap
+                    i.fa-solid.fa-ellipsis-vertical.fa-xl
+            iframe(src=`${music.musicInfo.musicSrc}?controls=0`)
+            .music__controller-wrap
+                .music__data-and-like
+                    .music__icon-wrap
+                        i#dislikeBtn.fa-regular.fa-thumbs-down.fa-xl
+                    //- i.fa-solid.fa-thumbs-down.fa-xl
+                    .music__data
+                        span.music__title= music.title
+                        span.music__artist= music.artist
+                    //- i.fa-solid.fa-thumbs-up.fa-xl
+                    .music__icon-wrap
+                        i#likeBtn.fa-regular.fa-thumbs-up.fa-xl
+                .music__play-time-wrap
+                    input(type="range", value=0, step=1, min=0)
+                    .music__play-time
+                        span.music__time-left 0:00
+                        span.music__time-total 0:00
+                .music__control
+                    .music__icon-wrap
+                        i.fa-solid.fa-shuffle.fa-xl
+                    .music__icon-wrap
+                        i.fa-solid.fa-backward-step.fa-xl
+                    .music__play-icon-wrap
+                        i.fa-solid.fa-play.fa-xl
+                    .music__icon-wrap
+                        i.fa-solid.fa-forward-step.fa-xl
+                    .music__control-sound
+                        .music__control-sound-background.inputNone
+                            input(
+                                type="range",
+                                step=1,
+                                vaule=50,
+                                min=0,
+                                max=100
+                            )
+                        //- i.fa-solid.fa-volume-xmark.fa-xl
+                        .music__icon-wrap
+                            i.fa-solid.fa-volume-off.fa-xl
+                        //- i.fa-solid.fa-volume-low.fa-xl
+                        //- i.fa-solid.fa-volume-high.fa-xl
+        .music__next-list-wrap
+            .music__list-control
+                span.music__random-list.listSelected 랜덤 트랙 리스트
+                span.music__same-genre 같은 장르 리스트
+            .music__vertical-list
+                each vMusic in randomMusicList 
+                    +musicVertical(vMusic)
+                else
+                    span.empty__message 음악을 찾을 수 없습니다.
 
-    .music__data
-        p.music__artist= music.artist
-        p.music__divide -
-        p.music__title= music.title
-        .music__recommenderDiv
-            small.music__recommender Recommended by
-                a(href=`users/${music.recommender._id}`)= music.recommender.name
-            if String(music.recommender._id) === String(loggedInUser._id)
-                a.music__verifiedButton(href=`${music.id}/edit`) Edit Music &rarr;
-                a.music__verifiedButton(href=`${music.id}/delete`) Delete Music &rarr;
+    #moreWrap.more-wrap.more-wrap-none
+        .more__music
+            .more__music-img-wrap
+                img(src=music.musicInfo.musicThumbnailSrc, alt="")
+            .more__music-info
+                span.more__music-title= music.title
+                span.more__music-artist= music.artist
+            .more__music-like
+                .music__icon-wrap
+                    i.fa-regular.fa-thumbs-down.fa-xl
+                .music__icon-wrap
+                    i.fa-regular.fa-thumbs-up.fa-xl
+        ul.more__ul
+            li.more__artist
+                i.fa-solid.fa-music
+                a(href=`/search?artistKeyword=${music.artist}`) 이 아티스트의 노래
+            li.more__playlist-save
+                i.fa-solid.fa-plus.fa-lg
+                span 내 플레이리스트에 저장
+    .listenBlurDiv
 
 block scripts
     script(src="/assets/js/controlYoutubeVideo.js") 

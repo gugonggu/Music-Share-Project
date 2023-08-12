@@ -1,11 +1,10 @@
 mixin music(music)
     a.music-mixin(href=`/music/${music._id}`)
-        img(src=music.musicInfo.musicThumbnailSrc, alt="")
+        .music-img-wrap
+            img(src=music.musicInfo.musicThumbnailSrc, alt="")
         .music-mixin__data
             span.music-mixin__title #{ music.title }
             span 
             span -
             span 
             span.music-mixin__artist #{ music.artist }
-            .music-mixin__recommender
-                span #{ music.recommender.username }

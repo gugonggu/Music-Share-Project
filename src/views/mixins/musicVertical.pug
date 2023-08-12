@@ -1,0 +1,11 @@
+mixin musicVertical(music)
+    .music__vertical(data-musicid=music._id)
+        .music__vertical-img-wrap
+            img(src=music.musicInfo.musicThumbnailSrc, alt="")
+        .music__vertical-mixin-data
+            p.music__vertical-mixin-title= music.title
+            .music__vertical-mixin-artist-and-recommender
+                span.music__vertical-mixin-artist= music.artist
+                .music__vertical-mixin-recommender-wrap
+                    span.music__vertical-mixin-recommender #{ music.recommender.username }
+                    | 님이 추천함

@@ -17,16 +17,19 @@ export const postUpload = async (req, res) => {
     const {
         user: { _id },
     } = req.session;
-    const { title, artist, musicId, genre, tags } = req.body;
+    const { title, artist, musicUrl, genre, tags } = req.body;
+
+    const youtubeVideoId = Music.getYoutubeVideoId(musicUrl);
 
     try {
         const newMusic = await Music.create({
             title,
             artist,
             musicInfo: {
-                musicId: musicId,
-                musicSrc: `https://www.youtube.com/embed/${musicId}`,
-                musicThumbnailSrc: `https://img.youtube.com/vi/${musicId}/maxresdefault.jpg`,
+                musicUrl: musicUrl,
+                musicId: youtubeVideoId,
+                musicSrc: `https://www.youtube.com/embed/${youtubeVideoId}`,
+                musicThumbnailSrc: `https://img.youtube.com/vi/${youtubeVideoId}/maxres2.jpg`,
             },
             genre: Music.formatGenre(genre),
             recommender: _id,
@@ -50,9 +53,18 @@ export const listen = async (req, res) => {
     if (!music) {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
+    const allMusic = await Music.find().populate("recommender");
+    const randomMusicList = [...allMusic];
+    for (let i = randomMusicList.length - 1; i > 0; i--) {
+        const randomPosition = Math.floor(Math.random() * (i + 1));
+        const temp = randomMusicList[i];
+        randomMusicList[i] = randomMusicList[randomPosition];
+        randomMusicList[randomPosition] = temp;
+    }
     return res.render("musics/listen", {
         pageTitle: music.title,
         music: music,
+        randomMusicList: randomMusicList,
     });
 };
 
@@ -76,18 +88,22 @@ export const getEdit = async (req, res) => {
 
 export const postEdit = async (req, res) => {
     const { id } = req.params;
-    const { title, artist, musicId, genre, tags } = req.body;
+    const { title, artist, musicUrl, genre, tags } = req.body;
     const music = await Music.exists({ _id: id });
     if (!music) {
         return res.status(404).render("404", { pageTitle: "Music not found." });
     }
+
+    const youtubeVideoId = Music.getYoutubeVideoId(musicUrl);
+
     await Music.findByIdAndUpdate(id, {
         title,
         artist,
         musicInfo: {
-            musicId: musicId,
-            musicSrc: `https://www.youtube.com/embed/${musicId}`,
-            musicThumbnailSrc: `https://img.youtube.com/vi/${musicId}/maxresdefault.jpg`,
+            musicUrl: musicUrl,
+            musicId: youtubeVideoId,
+            musicSrc: `https://www.youtube.com/embed/${youtubeVideoId}`,
+            musicThumbnailSrc: `https://img.youtube.com/vi/${youtubeVideoId}/maxres2.jpg`,
         },
         genre: Music.formatGenre(genre),
         tags: Music.formatTags(tags),
