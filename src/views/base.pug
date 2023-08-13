@@ -1,6 +1,7 @@
 doctype html 
 html(lang="ko")
     head
+        link(rel="shortcut icon", href="#")
         link(
             rel="stylesheet",
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -25,12 +26,15 @@ html(lang="ko")
                 a#myPlayListBtn(href=`/users/${loggedInUser._id}`)
                     i.fa-solid.fa-thumbs-up.fa-xl
                     span 내가 추천한 음악
+                a(href="/")
+                    i.fa-solid.fa-thumbs-up.fa-xl
+                    span 내가 좋아요 표시한 음악
+                a(href="/") 
+                    i.fa-solid.fa-list.fa-xl
+                    span 플레이리스트
             a#otherRecommendBtn(href="/music/others-playlist")
                 i.fa-solid.fa-users.fa-lg
                 span 다른 유저의 추천 음악
-            a(href="/") 
-                i.fa-solid.fa-list.fa-xl
-                span 플레이리스트
         main
             header
                 button.openNavBtn

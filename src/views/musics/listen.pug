@@ -16,46 +16,45 @@ block section
                         | 님이 추천함
                 #moreBtn.music__icon-wrap
                     i.fa-solid.fa-ellipsis-vertical.fa-xl
-            iframe(src=`${music.musicInfo.musicSrc}?controls=0`)
+            iframe#player(
+                src=`${music.musicInfo.musicSrc}?controls=0&rel=0&enablejsapi=1`,
+                allowfullscreen,
+                data-currentmusicid=music._id
+            )
             .music__controller-wrap
                 .music__data-and-like
                     .music__icon-wrap
                         i#dislikeBtn.fa-regular.fa-thumbs-down.fa-xl
-                    //- i.fa-solid.fa-thumbs-down.fa-xl
                     .music__data
                         span.music__title= music.title
                         span.music__artist= music.artist
-                    //- i.fa-solid.fa-thumbs-up.fa-xl
                     .music__icon-wrap
                         i#likeBtn.fa-regular.fa-thumbs-up.fa-xl
                 .music__play-time-wrap
-                    input(type="range", value=0, step=1, min=0)
+                    input#timeInput(type="range", value=0, step=1, min=0)
                     .music__play-time
-                        span.music__time-left 0:00
-                        span.music__time-total 0:00
+                        span.music__time-left 00:00
+                        span.music__time-total 00:00
                 .music__control
                     .music__icon-wrap
                         i.fa-solid.fa-shuffle.fa-xl
                     .music__icon-wrap
                         i.fa-solid.fa-backward-step.fa-xl
-                    .music__play-icon-wrap
+                    #playBtn.music__play-icon-wrap.playing
                         i.fa-solid.fa-play.fa-xl
-                    .music__icon-wrap
+                    #nextBtn.music__icon-wrap
                         i.fa-solid.fa-forward-step.fa-xl
                     .music__control-sound
                         .music__control-sound-background.inputNone
                             input(
                                 type="range",
                                 step=1,
-                                vaule=50,
+                                value=50,
                                 min=0,
                                 max=100
                             )
-                        //- i.fa-solid.fa-volume-xmark.fa-xl
                         .music__icon-wrap
-                            i.fa-solid.fa-volume-off.fa-xl
-                        //- i.fa-solid.fa-volume-low.fa-xl
-                        //- i.fa-solid.fa-volume-high.fa-xl
+                            i#soundIcon.fa-solid.fa-volume-off.fa-xl
         .music__next-list-wrap
             .music__list-control
                 span.music__random-list.listSelected 랜덤 트랙 리스트
@@ -88,4 +87,5 @@ block section
     .listenBlurDiv
 
 block scripts
+    script(src="https://www.youtube.com/iframe_api", async)
     script(src="/assets/js/controlYoutubeVideo.js") 

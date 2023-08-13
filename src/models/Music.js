@@ -9,28 +9,13 @@ const musicSchema = new mongoose.Schema({
         musicSrc: { type: String, required: true, trim: true },
         musicThumbnailSrc: { type: String, required: true, trim: true },
     },
-    genre: [{ type: String, required: true, trim: true }],
-    tags: [{ type: String, required: true, trim: true }],
+    genre: { type: String, required: true, trim: true },
     recommender: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: "User",
     },
-    meta: {
-        like: { type: Number, default: 0, required: true },
-        disLike: { type: Number, default: 0, required: true },
-    },
     createdAt: { type: Date, required: true, default: Date.now },
-});
-
-musicSchema.static("formatTags", function (tags) {
-    return tags
-        .split(",")
-        .map((word) => (word.startsWith("#") ? word : `${word}`));
-});
-
-musicSchema.static("formatGenre", function (genre) {
-    return genre.split(",").map((word) => (word ? word : `${word}`));
 });
 
 musicSchema.static("getYoutubeVideoId", function (url) {

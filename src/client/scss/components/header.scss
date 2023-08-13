@@ -1,9 +1,9 @@
-body{
-    main{
-        header{
+body {
+    main {
+        header {
             padding-top: 18px;
             display: flex;
-            color: white;   
+            color: white;
             align-items: center;
             font-size: 18px;
             position: -webkit-sticky;
@@ -11,67 +11,67 @@ body{
             top: 0px;
             position: relative;
 
-            button{
+            button {
                 margin-left: 20px;
                 border: 1px solid transparent;
                 background-color: transparent;
                 color: white;
                 padding: 5px;
                 cursor: pointer;
-                
-                &:hover{
+
+                &:hover {
                     background-color: rgba(83, 85, 86, 0.5);
                     border-radius: 4px;
                     border: 1px solid rgba(54, 54, 54, 0.8);
                 }
             }
 
-            a{
+            a {
                 color: white;
                 text-decoration: none;
                 padding: 13px 10px;
                 border: 1px solid transparent;
                 position: absolute;
-                &:hover{
+                &:hover {
                     background-color: rgba(83, 85, 86, 0.5);
                     border-radius: 4px;
                     border: 1px solid rgba(54, 54, 54, 0.8);
                 }
             }
 
-            .pageTitleA{
+            .pageTitleA {
                 position: absolute;
                 left: 45%;
-                font-family: 'Dancing Script', cursive;
-                &:hover{
+                font-family: "Dancing Script", cursive;
+                &:hover {
                     background-color: transparent;
                     border: 1px solid transparent;
                 }
             }
 
-            .logoutA{
+            .logoutA {
                 right: 20px;
             }
 
-            .editprofA{
+            .editprofA {
                 right: 110px;
             }
 
-            .uploadA{
+            .uploadA {
                 right: 210px;
             }
 
-            .joinA{
+            .joinA {
                 right: 100px;
             }
 
-            .loginDiv{
+            .loginDiv {
                 right: 20px;
             }
         }
     }
 }
 
-.none{
+.none {
     display: none !important;
 }

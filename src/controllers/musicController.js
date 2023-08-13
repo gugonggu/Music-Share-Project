@@ -17,7 +17,7 @@ export const postUpload = async (req, res) => {
     const {
         user: { _id },
     } = req.session;
-    const { title, artist, musicUrl, genre, tags } = req.body;
+    const { title, artist, musicUrl, genre } = req.body;
 
     const youtubeVideoId = Music.getYoutubeVideoId(musicUrl);
 
@@ -31,9 +31,8 @@ export const postUpload = async (req, res) => {
                 musicSrc: `https://www.youtube.com/embed/${youtubeVideoId}`,
                 musicThumbnailSrc: `https://img.youtube.com/vi/${youtubeVideoId}/maxres2.jpg`,
             },
-            genre: Music.formatGenre(genre),
+            genre: genre,
             recommender: _id,
-            tags: Music.formatTags(tags),
         });
         const user = await User.findById(_id);
         user.musics.push(newMusic._id);
@@ -88,7 +87,7 @@ export const getEdit = async (req, res) => {
 
 export const postEdit = async (req, res) => {
     const { id } = req.params;
-    const { title, artist, musicUrl, genre, tags } = req.body;
+    const { title, artist, musicUrl, genre } = req.body;
     const music = await Music.exists({ _id: id });
     if (!music) {
         return res.status(404).render("404", { pageTitle: "Music not found." });
@@ -105,8 +104,7 @@ export const postEdit = async (req, res) => {
             musicSrc: `https://www.youtube.com/embed/${youtubeVideoId}`,
             musicThumbnailSrc: `https://img.youtube.com/vi/${youtubeVideoId}/maxres2.jpg`,
         },
-        genre: Music.formatGenre(genre),
-        tags: Music.formatTags(tags),
+        genre: genre,
     });
     req.flash("success", "Changes saved.");
     return res.redirect(`/music/${id}`);
@@ -136,7 +134,7 @@ export const deleteMusic = async (req, res) => {
 };
 
 export const search = async (req, res) => {
-    const { titleKeyword, artistKeyword } = req.query;
+    const { titleKeyword, artistKeyword, genreKeyword } = req.query;
     let musics = [];
     if (titleKeyword) {
         musics = await Music.find({
@@ -149,6 +147,13 @@ export const search = async (req, res) => {
         musics = await Music.find({
             artist: {
                 $regex: new RegExp(artistKeyword, "i"),
+            },
+        }).populate("recommender");
+    }
+    if (genreKeyword) {
+        musics = await Music.find({
+            artist: {
+                $regex: new RegExp(genreKeyword, "i"),
             },
         }).populate("recommender");
     }
@@ -165,4 +170,56 @@ export const getOthersPlaylist = async (req, res) => {
 
 export const postOthersPlaylist = async (req, res) => {
     return res.end();
+};
+
+export const musicDislike = async (req, res) => {
+    const { id } = req.params;
+    const {
+        user: { _id },
+    } = req.session;
+    const music = await Music.findById(id);
+    if (!music) {
+        return res.sendStatus(404);
+    }
+    const user = await User.findById(_id);
+    if (user.musicDislikes.includes(id)) {
+        return res.sendStatus(304);
+    }
+    if (user.musicLikes.includes(id)) {
+        for (let i = 0; i < user.musicLikes.length; i++) {
+            if (user.musicLikes[i].toString() === id.toString()) {
+                user.musicLikes.splice(i, 1);
+                i--;
+            }
+        }
+    }
+    user.musicDislikes.push(id);
+    user.save();
+    return res.sendStatus(200);
+};
+
+export const musicLike = async (req, res) => {
+    const { id } = req.params;
+    const {
+        user: { _id },
+    } = req.session;
+    const music = await Music.findById(id);
+    if (!music) {
+        return res.sendStatus(404);
+    }
+    const user = await User.findById(_id);
+    if (user.musicLikes.includes(id)) {
+        return res.sendStatus(304);
+    }
+    if (user.musicDislikes.includes(id)) {
+        for (let i = 0; i < user.musicDislikes.length; i++) {
+            if (user.musicDislikes[i].toString() === id.toString()) {
+                user.musicDislikes.splice(i, 1);
+                i--;
+            }
+        }
+    }
+    user.musicLikes.push(id);
+    user.save();
+    return res.sendStatus(200);
 };

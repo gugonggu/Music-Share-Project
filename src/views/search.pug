@@ -2,14 +2,19 @@ extends base.pug
 include mixins/music
 
 block section
-    form.search__form(method="GET")
-        input(name="titleKeyword", type="text", placeholder="제목으로 검색")
-        button
-            i.fas.fa-search
-    form.search__form(method="GET")
-        input(name="artistKeyword", type="text", placeholder="아티스트로 검색")
-        button
-            i.fas.fa-search
+    .search-wrap
+        form.search__form(method="GET")
+            input(name="titleKeyword", type="text", placeholder="제목으로 검색")
+            button
+                i.fas.fa-search.fa-xl
+        form.search__form(method="GET")
+            input(name="artistKeyword", type="text", placeholder="아티스트로 검색")
+            button
+                i.fas.fa-search.fa-xl
+        form.search__form(method="GET")
+            input(name="genreKeyword", type="text", placeholder="장르로 검색")
+            button
+                i.fas.fa-search.fa-xl
 
     .music-grid
         each music in musics
