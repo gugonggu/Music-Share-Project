@@ -48,22 +48,53 @@ export const postUpload = async (req, res) => {
 
 export const listen = async (req, res) => {
     const { id } = req.params;
-    const music = await Music.findById(id).populate("recommender");
+    const {
+        user: { _id },
+    } = req.session;
+    const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
-    const allMusic = await Music.find().populate("recommender");
-    const randomMusicList = [...allMusic];
-    for (let i = randomMusicList.length - 1; i > 0; i--) {
-        const randomPosition = Math.floor(Math.random() * (i + 1));
-        const temp = randomMusicList[i];
-        randomMusicList[i] = randomMusicList[randomPosition];
-        randomMusicList[randomPosition] = temp;
+    // 랜덤 트랙 리스트 구현 코드
+    const allMusic = await Music.find().populate("recommender", "username");
+    const randomMusicList = [];
+    randomMusicList.push(music);
+    while (randomMusicList.length < 9) {
+        const randomIndex = Math.floor(Math.random() * allMusic.length);
+        if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
+            continue;
+        }
+        if (randomMusicList.includes(allMusic[randomIndex])) {
+            continue;
+        }
+        randomMusicList.push(allMusic[randomIndex]);
+    }
+
+    // 유저 좋아요 / 싫어요 확인
+    const user = await User.findById(_id);
+    let isLiked = null;
+    if (user.musicLikes.includes(id)) {
+        for (let i = 0; i < user.musicLikes.length; i++) {
+            if (user.musicLikes[i].toString() === id.toString()) {
+                user.musicLikes.splice(i, 1);
+                i--;
+            }
+        }
+        isLiked = true;
+    } else if (user.musicDislikes.includes(id)) {
+        for (let i = 0; i < user.musicDislikes.length; i++) {
+            if (user.musicDislikes[i].toString() === id.toString()) {
+                user.musicDislikes.splice(i, 1);
+                i--;
+            }
+        }
+        isLiked = false;
     }
     return res.render("musics/listen", {
         pageTitle: music.title,
         music: music,
         randomMusicList: randomMusicList,
+        isLiked: isLiked,
     });
 };
 
@@ -183,6 +214,13 @@ export const musicDislike = async (req, res) => {
     }
     const user = await User.findById(_id);
     if (user.musicDislikes.includes(id)) {
+        for (let i = 0; i < user.musicDislikes.length; i++) {
+            if (user.musicDislikes[i].toString() === id.toString()) {
+                user.musicDislikes.splice(i, 1);
+                i--;
+            }
+        }
+        user.save();
         return res.sendStatus(304);
     }
     if (user.musicLikes.includes(id)) {
@@ -209,8 +247,16 @@ export const musicLike = async (req, res) => {
     }
     const user = await User.findById(_id);
     if (user.musicLikes.includes(id)) {
+        for (let i = 0; i < user.musicLikes.length; i++) {
+            if (user.musicLikes[i].toString() === id.toString()) {
+                user.musicLikes.splice(i, 1);
+                i--;
+            }
+        }
+        user.save();
         return res.sendStatus(304);
     }
+
     if (user.musicDislikes.includes(id)) {
         for (let i = 0; i < user.musicDislikes.length; i++) {
             if (user.musicDislikes[i].toString() === id.toString()) {
@@ -222,4 +268,40 @@ export const musicLike = async (req, res) => {
     user.musicLikes.push(id);
     user.save();
     return res.sendStatus(200);
+};
+
+export const randomMusic = async (req, res) => {
+    const { id } = req.params;
+    const music = await Music.findById(id).populate("recommender", "username");
+    if (!music) {
+        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+    }
+    const allMusic = await Music.find().populate("recommender", "username");
+    const randomMusicList = [];
+    randomMusicList.push(music);
+    while (randomMusicList.length < 9) {
+        const randomIndex = Math.floor(Math.random() * allMusic.length);
+        if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
+            continue;
+        }
+        if (randomMusicList.includes(allMusic[randomIndex])) {
+            continue;
+        }
+        randomMusicList.push(allMusic[randomIndex]);
+    }
+    return res.status(200).json({ randomMusicList: randomMusicList });
+};
+
+export const sameGenreMusic = async (req, res) => {
+    const { id } = req.params;
+    const music = await Music.findById(id);
+    if (!music) {
+        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+    }
+    const sameGenreList = await Music.find({ genre: music.genre }).populate(
+        "recommender",
+        "username"
+    );
+    sameGenreList.sort(() => Math.random() - 0.5);
+    return res.status(200).json({ sameGenreList: sameGenreList });
 };

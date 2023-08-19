@@ -13,7 +13,7 @@ import {
 
 const musicRouter = express.Router();
 
-musicRouter.get("/:id([0-9a-f]{24})", listen);
+musicRouter.route("/:id([0-9a-f]{24})").all(protectorMiddleware).get(listen);
 musicRouter
     .route("/:id([0-9a-f]{24})/edit")
     .all(protectorMiddleware)

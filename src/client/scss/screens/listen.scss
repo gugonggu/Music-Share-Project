@@ -25,12 +25,14 @@ a {
 .music__wrap {
     display: flex;
     width: 100%;
+    height: 100vh;
     margin-top: 10px;
 
     .music__control-wrap {
         width: 50%;
         padding-left: 26px;
         padding-right: 26px;
+        margin-top: 5px;
 
         .music__control-top {
             display: flex;
@@ -46,14 +48,18 @@ a {
                     border-radius: 4px;
                     border: 1px solid rgba(54, 54, 54, 0.8);
                 }
+                span {
+                    margin-left: 5px;
+                }
             }
         }
 
         iframe {
-            margin-top: 10px;
-            padding: 5%;
+            margin-top: 30px;
+            margin-left: 5%;
             width: 90%;
-            height: 75%;
+            height: 45%;
+            box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
         }
 
         .music__controller-wrap {
@@ -152,18 +158,20 @@ a {
 
     .music__next-list-wrap {
         width: 50%;
+        padding: 0 5%;
         .music__list-control {
             height: 10%;
-            margin: 0 5%;
             display: flex;
             justify-content: space-around;
             border-bottom: 2px solid rgb(190, 190, 190);
             span {
+                cursor: pointer;
                 width: 50%;
                 height: 100%;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                border-bottom: 2px solid transparent;
                 &.listSelected {
                     border-bottom: 2px solid white;
                 }
@@ -223,6 +231,7 @@ a {
     }
     .more__ul {
         li {
+            cursor: pointer;
             padding-left: 3%;
             width: 97%;
             height: 50px;

@@ -7,13 +7,20 @@ block section
             .music__control-top
                 #backBtn.music__icon-wrap
                     i.fa-solid.fa-arrow-left.fa-xl.music__icon-hover
-                if String(music.recommender._id) === String(loggedInUser._id)
-                    a.music__verifiedButton(href=`${music.id}/edit`) Edit Music &rarr;
-                    a.music__verifiedButton(href=`${music.id}/delete`) Delete Music &rarr;
-                else
-                    .music__control-top-recommender
-                        a(href=`/users/${music.recommender._id}`) #{ music.recommender.username }
-                        | 님이 추천함
+                .music__control-top-mid(data-loggedinuser=loggedInUser._id)
+                    if String(music.recommender._id) === String(loggedInUser._id)
+                        a.music__verifiedButton(href=`${music.id}/edit`) 
+                            i.fa-solid.fa-pen-to-square
+                            span Edit Music
+                        a.music__verifiedButton(href=`${music.id}/delete`) 
+                            i.fa-solid.fa-trash
+                            span Delete Music
+                    else
+                        .music__control-top-recommender
+                            a.music__recommender(
+                                href=`/users/${music.recommender._id}`
+                            ) #{ music.recommender.username }
+                            span 님이 추천함
                 #moreBtn.music__icon-wrap
                     i.fa-solid.fa-ellipsis-vertical.fa-xl
             iframe#player(
@@ -24,21 +31,27 @@ block section
             .music__controller-wrap
                 .music__data-and-like
                     .music__icon-wrap
-                        i#dislikeBtn.fa-regular.fa-thumbs-down.fa-xl
+                        if isLiked === false
+                            i#dislikeBtn.fa-solid.fa-thumbs-down.fa-xl
+                        else
+                            i#dislikeBtn.fa-regular.fa-thumbs-down.fa-xl
                     .music__data
                         span.music__title= music.title
                         span.music__artist= music.artist
                     .music__icon-wrap
-                        i#likeBtn.fa-regular.fa-thumbs-up.fa-xl
+                        if isLiked === true
+                            i#likeBtn.fa-solid.fa-thumbs-up.fa-xl
+                        else
+                            i#likeBtn.fa-regular.fa-thumbs-up.fa-xl
                 .music__play-time-wrap
                     input#timeInput(type="range", value=0, step=1, min=0)
                     .music__play-time
                         span.music__time-left 00:00
                         span.music__time-total 00:00
                 .music__control
-                    .music__icon-wrap
+                    #shuffleBtn.music__icon-wrap
                         i.fa-solid.fa-shuffle.fa-xl
-                    .music__icon-wrap
+                    #prevBtn.music__icon-wrap
                         i.fa-solid.fa-backward-step.fa-xl
                     #playBtn.music__play-icon-wrap.playing
                         i.fa-solid.fa-play.fa-xl
@@ -57,9 +70,9 @@ block section
                             i#soundIcon.fa-solid.fa-volume-off.fa-xl
         .music__next-list-wrap
             .music__list-control
-                span.music__random-list.listSelected 랜덤 트랙 리스트
-                span.music__same-genre 같은 장르 리스트
-            .music__vertical-list
+                span#musicRandom.music__random-list.listSelected 랜덤 트랙 리스트
+                span#musicSameGenre.music__same-genre 같은 장르 리스트
+            #musicList.music__vertical-list
                 each vMusic in randomMusicList 
                     +musicVertical(vMusic)
                 else
@@ -68,19 +81,25 @@ block section
     #moreWrap.more-wrap.more-wrap-none
         .more__music
             .more__music-img-wrap
-                img(src=music.musicInfo.musicThumbnailSrc, alt="")
+                img#moreImg(src=music.musicInfo.musicThumbnailSrc, alt="")
             .more__music-info
                 span.more__music-title= music.title
                 span.more__music-artist= music.artist
             .more__music-like
                 .music__icon-wrap
-                    i.fa-regular.fa-thumbs-down.fa-xl
+                    if isLiked === false
+                        i#moreDislikeBtn.fa-solid.fa-thumbs-down.fa-xl
+                    else
+                        i#moreDislikeBtn.fa-regular.fa-thumbs-down.fa-xl
                 .music__icon-wrap
-                    i.fa-regular.fa-thumbs-up.fa-xl
+                    if isLiked === true
+                        i#moreLikeBtn.fa-solid.fa-thumbs-up.fa-xl
+                    else
+                        i#moreLikeBtn.fa-regular.fa-thumbs-up.fa-xl
         ul.more__ul
             li.more__artist
                 i.fa-solid.fa-music
-                a(href=`/search?artistKeyword=${music.artist}`) 이 아티스트의 노래
+                a#moreAnchor(href=`/search?artistKeyword=${music.artist}`) 이 아티스트의 노래
             li.more__playlist-save
                 i.fa-solid.fa-plus.fa-lg
                 span 내 플레이리스트에 저장

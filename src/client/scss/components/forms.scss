@@ -1,7 +1,6 @@
 .defaultFormStyle {
     box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
     .formTopSpan {
-        font-family: "Dancing Script", cursive;
         font-weight: 500;
         font-size: 20px;
         margin: 30px 0px;
@@ -12,14 +11,14 @@
     width: 60%;
     max-width: 600px;
     margin: 50px auto;
-    background-color: rgba(24, 24, 32);
+    background-color: rgb(24, 24, 24);
     padding: 30px;
     border-radius: 10px;
     input {
         height: 35px;
-        border: 1px solid rgb(48, 48, 61);
-        border-radius: 15px;
-        background-color: rgb(24, 24, 32);
+        border: 1px solid rgb(59, 59, 73);
+        border-radius: 10px;
+        background-color: rgb(24, 24, 24);
         color: white;
         width: 60%;
         padding: 5px;
@@ -43,14 +42,20 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
         cursor: pointer;
-        margin-top: 30px;
+        margin-top: 50px;
         width: 65%;
+        border: none;
+        margin-bottom: 30px;
     }
     .formGoto {
         margin-top: 20px;
+        margin-bottom: 20px;
         span {
             color: rgb(186, 186, 188);
             margin-right: 5px;
+        }
+        a {
+            text-underline-offset: 4px;
         }
     }
 }

@@ -4,6 +4,7 @@ block section
     if errorMessage
         span= errorMessage
     form.defaultFormStyle(method="POST")
+        span.formTopSpan 음악 추천
         input(name="title", type="text", required, placeholder="제목")
         input(name="artist", type="text", required, placeholder="아티스트")
         input(name="musicUrl", type="text", required, placeholder="유튜브 영상 URL")

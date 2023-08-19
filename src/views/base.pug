@@ -2,6 +2,12 @@ doctype html
 html(lang="ko")
     head
         link(rel="shortcut icon", href="#")
+        link(rel="preconnect", href="https://fonts.googleapis.com")
+        link(rel="preconnect", href="https://fonts.gstatic.com", crossorigin)
+        link(
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600&display=swap",
+            rel="stylesheet"
+        )
         link(
             rel="stylesheet",
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -34,7 +40,7 @@ html(lang="ko")
                     span 플레이리스트
             a#otherRecommendBtn(href="/music/others-playlist")
                 i.fa-solid.fa-users.fa-lg
-                span 다른 유저의 추천 음악
+                span 장르로 찾기 수정예정
         main
             header
                 button.openNavBtn
