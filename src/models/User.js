@@ -19,6 +19,15 @@ const userSchema = new mongoose.Schema({
             ref: "Music",
         },
     ],
+    musicListened: [
+        {
+            musicListenedId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Music",
+            },
+            count: { type: Number, default: 1 },
+        },
+    ],
     soundValue: { type: Number, default: 50, required: true },
 });
 

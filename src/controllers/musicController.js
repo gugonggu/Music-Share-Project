@@ -1,4 +1,3 @@
-import { async } from "regenerator-runtime";
 import Music from "../models/Music";
 import User from "../models/User";
 
@@ -59,7 +58,8 @@ export const listen = async (req, res) => {
     const allMusic = await Music.find().populate("recommender", "username");
     const randomMusicList = [];
     randomMusicList.push(music);
-    while (randomMusicList.length < 9) {
+    const limit = allMusic.length < 9 ? allMusic.length : 9;
+    while (randomMusicList.length < limit) {
         const randomIndex = Math.floor(Math.random() * allMusic.length);
         if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
             continue;
@@ -304,4 +304,55 @@ export const sameGenreMusic = async (req, res) => {
     );
     sameGenreList.sort(() => Math.random() - 0.5);
     return res.status(200).json({ sameGenreList: sameGenreList });
+};
+
+export const confirmLiked = async (req, res) => {
+    const {
+        body: { loggedInUserId },
+        params: { id },
+    } = req;
+    const user = await User.findById(loggedInUserId);
+    let liked = null;
+    if (user.musicLikes.includes(id)) {
+        for (let i = 0; i < user.musicLikes.length; i++) {
+            if (user.musicLikes[i].toString() === id.toString()) {
+                user.musicLikes.splice(i, 1);
+                i--;
+            }
+        }
+        liked = true;
+    } else if (user.musicDislikes.includes(id)) {
+        for (let i = 0; i < user.musicDislikes.length; i++) {
+            if (user.musicDislikes[i].toString() === id.toString()) {
+                user.musicDislikes.splice(i, 1);
+                i--;
+            }
+        }
+        liked = false;
+    }
+    return res.status(200).json({ liked: liked });
+};
+
+export const postListenCount = async (req, res) => {
+    const {
+        body: { loggedInUserId },
+        params: { id },
+    } = req;
+    const user = await User.findById(loggedInUserId);
+    for (let i = 0; i < user.musicListened.length; i++) {
+        if (
+            user.musicListened[i].musicListenedId.toString() === id.toString()
+        ) {
+            user.musicListened[i].count++;
+            user.save();
+            return res.sendStatus(200);
+        }
+    }
+    const obj = {
+        musicListenedId: id,
+        count: 1,
+    };
+    user.musicListened.push(obj);
+    user.save();
+    return res.sendStatus(200);
 };

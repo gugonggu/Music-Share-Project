@@ -31,7 +31,8 @@ const moreDislikeBtn = document.getElementById("moreDislikeBtn");
 const moreLikeBtn = document.getElementById("moreLikeBtn");
 const moreAnchor = document.getElementById("moreAnchor");
 
-const musics = document.querySelectorAll(".music__vertical");
+let musics = document.querySelectorAll(".music__vertical");
+musics[0].classList.add("nowPlaying");
 
 const loggedInPage = (obj) => {
     controlTopMid.innerHTML = `<a class="music__verifiedButton" href="${obj.dataset.musicid}/edit">
@@ -54,38 +55,92 @@ const notLoggedInPage = (id, username) => {
     `;
 };
 
-musics.forEach((v) =>
-    v.addEventListener("click", () => {
-        console.log("?");
-        iframe.src = v.dataset.verticalmusicsrc;
-        iframe.dataset.currentmusicid = v.dataset.musicid;
-        const imgSrc = v
-            .querySelector(".music__vertical-img-wrap")
-            .querySelector("img").src;
-        const title = v.querySelector("p").innerText;
-        const artist = v.querySelector(
-            ".music__vertical-mixin-artist"
-        ).innerText;
-        const recommender = v.querySelector(
-            ".music__vertical-mixin-recommender"
-        ).innerText;
-        const recommenderId = v.querySelector(
-            ".music__vertical-mixin-recommender"
-        ).dataset.recommenderid;
-        curMusicTitle.innerText = title;
-        curMusicArtist.innerText = artist;
-        moreImg.src = imgSrc;
-        moreMusicTitle.innerText = title;
-        moreMusicArtist.innerText = artist;
-        moreAnchor.href = `/search?artistKeyword=${artist}`;
-        if (loggedInUserId === recommenderId) {
-            loggedInPage(v);
-        } else {
-            notLoggedInPage(recommenderId, recommender);
+let curMusic = 0;
+const changeCurMusicInfo = async (v) => {
+    musics.forEach((e) => {
+        e.classList.remove("nowPlaying");
+    });
+    v.classList.add("nowPlaying");
+    player.loadVideoByUrl({
+        mediaContentUrl: v.dataset.verticalmusicsrc,
+    });
+    iframe.dataset.currentmusicid = v.dataset.musicid;
+    const imgSrc = v
+        .querySelector(".music__vertical-img-wrap")
+        .querySelector("img").src;
+    const title = v.querySelector("p").innerText;
+    const artist = v.querySelector(".music__vertical-mixin-artist").innerText;
+    const recommender = v.querySelector(
+        ".music__vertical-mixin-recommender"
+    ).innerText;
+    const recommenderId = v.querySelector(".music__vertical-mixin-recommender")
+        .dataset.recommenderid;
+    document.title = `${title} | Chillin on the beat`;
+    curMusicTitle.innerText = title;
+    curMusicArtist.innerText = artist;
+    moreImg.src = imgSrc;
+    moreMusicTitle.innerText = title;
+    moreMusicArtist.innerText = artist;
+    moreAnchor.href = `/search?artistKeyword=${artist}`;
+    if (loggedInUserId === recommenderId) {
+        loggedInPage(v);
+    } else {
+        notLoggedInPage(recommenderId, recommender);
+    }
+    const response = await fetch(
+        `/api/musics/${v.dataset.musicid}/confirmLiked`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ loggedInUserId: loggedInUserId }),
         }
-        history.pushState(null, "", v.dataset.musicid);
-    })
-);
+    );
+    if (response.status === 200) {
+        const { liked } = await response.json();
+        if (liked) {
+            if (!likeBtn.classList.contains("fa-solid")) {
+                likeBtn.classList.remove("fa-regular");
+                likeBtn.classList.add("fa-solid");
+            }
+            if (dislikeBtn.classList.contains("fa-solid")) {
+                dislikeBtn.classList.remove("fa-solid");
+                dislikeBtn.classList.add("fa-regular");
+            }
+        } else if (liked === false) {
+            if (!dislikeBtn.classList.contains("fa-solid")) {
+                dislikeBtn.classList.remove("fa-regular");
+                dislikeBtn.classList.add("fa-solid");
+            }
+            if (likeBtn.classList.contains("fa-solid")) {
+                likeBtn.classList.remove("fa-solid");
+                likeBtn.classList.add("fa-regular");
+            }
+        } else {
+            if (likeBtn.classList.contains("fa-solid")) {
+                likeBtn.classList.remove("fa-solid");
+                likeBtn.classList.add("fa-regular");
+            }
+            if (dislikeBtn.classList.contains("fa-solid")) {
+                dislikeBtn.classList.remove("fa-solid");
+                dislikeBtn.classList.add("fa-regular");
+            }
+        }
+    }
+    history.pushState(null, "", v.dataset.musicid);
+};
+
+let list = [];
+
+musics.forEach((v) => {
+    list.push(v);
+    v.addEventListener("click", () => {
+        changeCurMusicInfo(v);
+        const musicsList = Array.prototype.slice.call(musics);
+        curMusic = musicsList.indexOf(v);
+    });
+});
 
 const formatTime = (sec) => {
     const startIdx = sec >= 3600 ? 11 : 14;
@@ -104,8 +159,31 @@ window.onYouTubeIframeAPIReady = function () {
 
 function onPlayerReady(e) {
     // iframe 기본 소리 크기 설정
-    let value = soundInput.value;
-    player.setVolume(value);
+    (async () => {
+        const response = await fetch(`/api/users/${loggedInUserId}/sound`, {
+            method: "GET",
+        });
+        if (response.status === 200) {
+            const { value } = await response.json();
+            soundInput.value = value;
+            player.setVolume(value);
+            if (value == 0) {
+                soundIcon.classList.remove("fa-volume-off");
+                soundIcon.classList.add("fa-volume-xmark");
+            } else if (value > 0 && value <= 30) {
+                soundIcon.classList.remove("fa-volume-xmark");
+                soundIcon.classList.remove("fa-volume-low");
+                soundIcon.classList.add("fa-volume-off");
+            } else if (value > 30 && value <= 60) {
+                soundIcon.classList.remove("fa-volume-off");
+                soundIcon.classList.remove("fa-volume-high");
+                soundIcon.classList.add("fa-volume-low");
+            } else {
+                soundIcon.classList.remove("fa-volume-low");
+                soundIcon.classList.add("fa-volume-high");
+            }
+        }
+    })();
 }
 
 function onPlayerStateChange(e) {
@@ -120,6 +198,19 @@ function onPlayerStateChange(e) {
                 Math.floor(player.getCurrentTime())
             );
         }, 1000);
+    } else if (e.data == 0) {
+        (async () => {
+            await fetch(
+                `/api/musics/${iframe.dataset.currentmusicid}/listened`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ loggedInUserId: loggedInUserId }),
+                }
+            );
+        })();
     } else {
         playIcon.classList.remove("fa-pause");
         playIcon.classList.add("fa-play");
@@ -245,11 +336,19 @@ playBtn.addEventListener("click", () => {
 });
 
 prevBtn.addEventListener("click", () => {
-    console.log("hi");
+    if (curMusic === 0) {
+        return;
+    }
+    curMusic--;
+    changeCurMusicInfo(list[curMusic]);
 });
 
 nextBtn.addEventListener("click", () => {
-    console.log(iframe.dataset.currentmusicid);
+    if (curMusic === list.length - 1) {
+        return;
+    }
+    curMusic++;
+    changeCurMusicInfo(list[curMusic]);
 });
 
 soundBtn.addEventListener("click", () => {
@@ -276,48 +375,49 @@ soundInput.addEventListener("input", () => {
     }
 });
 
+soundInput.addEventListener("change", async () => {
+    const value = soundInput.value;
+    await fetch(`/api/users/${loggedInUserId}/sound`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ value: value }),
+    });
+});
+
 const printMusicList = (arr) => {
     musicList.innerHTML = "";
     arr.forEach((v, i) => {
-        const newMusic = document.createElement("div");
-        newMusic.className = "music__vertical";
-        newMusic.dataset.musicid = v._id;
-        newMusic.dataset.verticalmusicsrc = v.musicInfo.musicSrc;
-        const musicImgWrap = document.createElement("div");
-        musicImgWrap.className = "music__vertical-img-wrap";
-        newMusic.appendChild(musicImgWrap);
-        const musicImg = document.createElement("img");
-        musicImgWrap.appendChild(musicImg);
-        musicImg.src = v.musicInfo.musicThumbnailSrc;
-        musicImg.alt = "";
-        const musicData = document.createElement("div");
-        musicData.className = "music__vertical-mixin-data";
-        newMusic.appendChild(musicData);
-        const musicTitle = document.createElement("p");
-        musicTitle.className = "music__vertical-mixin-title";
-        musicTitle.innerText = v.title;
-        musicData.appendChild(musicTitle);
-        const musicArtistAndRecommender = document.createElement("div");
-        musicArtistAndRecommender.className =
-            "music__vertical-mixin-artist-and-recommender";
-        musicData.appendChild(musicArtistAndRecommender);
-        const musicArtist = document.createElement("span");
-        musicArtist.className = "music__vertical-mixin-artist";
-        musicArtist.innerText = v.artist;
-        musicArtistAndRecommender.appendChild(musicArtist);
-        const musicRecommenderWrap = document.createElement("div");
-        musicRecommenderWrap.className =
-            "music__vertical-mixin-recommender-wrap";
-        musicArtistAndRecommender.appendChild(musicRecommenderWrap);
-        const musicRecommender = document.createElement("a");
-        musicRecommender.href = `/users/${v.recommender._id}`;
-        musicRecommender.className = "music__vertical-mixin-recommender";
-        musicRecommender.innerText = `${v.recommender.username}`;
-        musicRecommenderWrap.appendChild(musicRecommender);
-        const recommededBy = document.createElement("span");
-        recommededBy.innerText = "님이 추천함";
-        musicRecommenderWrap.appendChild(recommededBy);
-        musicList.appendChild(newMusic);
+        let template = `
+        <div class="music__vertical" data-musicid=${v._id} data-verticalmusicsrc=${v.musicInfo.musicSrc}>
+            <div class="music__vertical-img-wrap">
+                <img src=${v.musicInfo.musicThumbnailSrc} alt=""></img>
+            </div>
+            <div class="music__vertical-mixin-data">
+                <p class="music__vertical-mixin-title">${v.title}</p>
+                <div class="music__vertical-mixin-artist-and-recommender">
+                    <span class="music__vertical-mixin-artist">${v.artist}</span>
+                    <div class="music__vertical-mixin-recommender-wrap">
+                        <a class="music__vertical-mixin-recommender" href="/users/${v.recommender._id}" data-recommenderid=${v.recommender._id}>${v.recommender.username}</a>
+                        <span>님이 추천함</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+        musicList.innerHTML += template;
+    });
+    musics = document.querySelectorAll(".music__vertical");
+    musics[0].classList.add("nowPlaying");
+    list = [];
+    musics.forEach((v) => {
+        list.push(v);
+        v.addEventListener("click", () => {
+            changeCurMusicInfo(v);
+            const musicsList = Array.prototype.slice.call(musics);
+            curMusic = musicsList.indexOf(v);
+        });
     });
 };
 

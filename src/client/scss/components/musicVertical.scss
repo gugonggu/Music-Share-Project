@@ -6,22 +6,19 @@
         cursor: pointer;
         width: 90%;
         display: flex;
-        margin: 3px 5%;
-        padding: 5px 10px;
+        margin: 0 5%;
+        padding: 8px 10px;
+        &.nowPlaying {
+            background-color: rgba(83, 85, 86, 0.5);
+        }
         .music__vertical-img-wrap {
-            position: relative;
             width: 60px;
             height: 60px;
             img {
-                position: absolute;
                 border-radius: 5px;
-                top: 0;
-                left: 0;
-                transform: translate(50, 50);
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                margin: auto;
             }
         }
         .music__vertical-mixin-data {

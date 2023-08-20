@@ -14,6 +14,7 @@
 @import "./screens/profile.scss";
 @import "./screens/listen.scss";
 @import "./screens/search.scss";
+@import "./screens/home.scss";
 
 // Font
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script&family=Open+Sans&display=swap");
@@ -27,17 +28,43 @@ body {
 
     font-family: "Open Sans", "Noto Sans KR", sans-serif;
 
-    background: #3a6186; /* fallback for old browsers */
-    background: -webkit-linear-gradient(
-        to right,
-        #89253e,
-        #3a6186
-    ); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(
-        to right,
-        #89253e,
-        #3a6186
-    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: linear-gradient(270deg, #3a6186, #89253e);
+    background-size: 400% 400%;
+
+    -webkit-animation: AnimationName 30s ease infinite;
+    -moz-animation: AnimationName 30s ease infinite;
+    animation: AnimationName 30s ease infinite;
+}
+@-webkit-keyframes AnimationName {
+    0% {
+        background-position: 0% 51%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 51%;
+    }
+}
+@-moz-keyframes AnimationName {
+    0% {
+        background-position: 0% 51%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 51%;
+    }
+}
+@keyframes AnimationName {
+    0% {
+        background-position: 0% 51%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 51%;
+    }
 }

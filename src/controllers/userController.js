@@ -154,3 +154,27 @@ export const myMusics = async (req, res) => {
         user,
     });
 };
+
+export const getSound = async (req, res) => {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    if (!user) {
+        return res.sendStatus(404);
+    }
+    const value = user.soundValue;
+    return res.status(200).json({ value: value });
+};
+
+export const postSound = async (req, res) => {
+    const {
+        body: { value },
+        params: { id },
+    } = req;
+    const user = await User.findById(id);
+    if (!user) {
+        return res.sendStatus(404);
+    }
+    user.soundValue = value;
+    user.save();
+    return res.sendStatus(200);
+};

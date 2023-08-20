@@ -1,7 +1,8 @@
 extends ../base.pug
 
 block section
-    form(method="POST")
+    form.defaultFormStyle(method="POST")
+        span.formTopSpan 음악 정보 수정
         input(
             type="text",
             name="title",
@@ -28,13 +29,6 @@ block section
             name="genre",
             required,
             placeholder="장르 (,로 구분)",
-            value=music.genre.join()
-        )
-        input(
-            type="text",
-            name="tags",
-            required,
-            placeholder="태그 (,로 구분)",
-            value=music.tags.join()
+            value=music.genre
         )
         input(type="submit", value="변경사항 저장")
