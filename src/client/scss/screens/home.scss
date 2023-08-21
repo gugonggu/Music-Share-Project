@@ -29,6 +29,9 @@
                 border: 1px solid rgba(150, 150, 150, 0.5);
                 border-radius: 15px;
                 font-family: "Open Sans", "Noto Sans KR", sans-serif;
+                &:hover {
+                    background-color: rgba(150, 150, 150, 0.5);
+                }
             }
         }
     }

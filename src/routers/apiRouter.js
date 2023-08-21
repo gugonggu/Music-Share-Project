@@ -6,18 +6,49 @@ import {
     sameGenreMusic,
     confirmLiked,
     postListenCount,
+    getMoreRandomMusic,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
 
 const apiRouter = express.Router();
 
-apiRouter.post("/musics/:id([0-9a-f]{24})/listened", postListenCount);
-apiRouter.post("/musics/:id([0-9a-f]{24})/dislike", musicDislike);
-apiRouter.post("/musics/:id([0-9a-f]{24})/like", musicLike);
-apiRouter.get("/musics/:id([0-9a-f]{24})/random", randomMusic);
-apiRouter.get("/musics/:id([0-9a-f]{24})/sameGenre", sameGenreMusic);
-apiRouter.patch("/musics/:id([0-9a-f]{24})/confirmLiked", confirmLiked);
+apiRouter.patch(
+    "/get-more-randommusic",
+    protectorMiddleware,
+    getMoreRandomMusic
+);
+
+apiRouter.post(
+    "/musics/:id([0-9a-f]{24})/listened",
+    protectorMiddleware,
+    postListenCount
+);
+apiRouter.post(
+    "/musics/:id([0-9a-f]{24})/dislike",
+    protectorMiddleware,
+    musicDislike
+);
+apiRouter.post(
+    "/musics/:id([0-9a-f]{24})/like",
+    protectorMiddleware,
+    musicLike
+);
+apiRouter.get(
+    "/musics/:id([0-9a-f]{24})/random",
+    protectorMiddleware,
+    randomMusic
+);
+apiRouter.get(
+    "/musics/:id([0-9a-f]{24})/sameGenre",
+    protectorMiddleware,
+    sameGenreMusic
+);
+apiRouter.patch(
+    "/musics/:id([0-9a-f]{24})/confirmLiked",
+    protectorMiddleware,
+    confirmLiked
+);
 apiRouter
     .route("/users/:id([0-9a-f]{24})/sound")
     .all(protectorMiddleware)

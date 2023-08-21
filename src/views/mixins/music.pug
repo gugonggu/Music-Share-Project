@@ -1,7 +1,10 @@
 mixin music(music)
-    a.music-mixin(href=`/music/${music._id}`)
+    a.music-mixin.randomMixin(
+        href=`/music/${music._id}`,
+        data-musicid=music._id
+    )
         .music-img-cutter
             img(src=music.musicInfo.musicThumbnailSrc, alt="")
         .music-mixin__data
-            p.music-mixin__title #{ music.title }
-            p.music-mixin__artist #{ music.artist }
+            span.music-mixin__title #{ music.title }
+            span.music-mixin__artist #{ music.artist }

@@ -1,34 +1,50 @@
 extends base.pug
 include mixins/music
+include mixins/userListenedMusic
 
 block section
     .homeWrap
+        .musicThatRandom.recommendWrap
+            .musicRecommendControl
+                span.musicRecommendTitle 랜덤 음악
+                button#randomMoreButton 더보기
+            #randomGrid.music-grid
+                each music in randomMusicList
+                    +music(music)
+                else
+                    span.empty__message 음악을 찾을 수 없습니다.
+
         .musicThatUserListened.recommendWrap
             .musicRecommendControl
-                span.musicRecommendTitle 내가 좋아하는
+                span.musicRecommendTitle 다시 듣기
                 button 더보기
             .music-grid
-                each music in musics
-                    +music(music)
+                each music in userListenedMusics
+                    +userListenedMusic(music)
                 else
                     span.empty__message 음악을 찾을 수 없습니다.
 
-        .musicThatUserWeather.recommendWrap
-            .musicRecommendControl
-                span.musicRecommendTitle 비가 내릴 땐
-                button 더보기
-            .music-grid
-                each music in musics
-                    +music(music)
-                else
-                    span.empty__message 음악을 찾을 수 없습니다.
+        //- .musicThatUserWeather.recommendWrap
+        //-     .musicRecommendControl
+        //-         span.musicRecommendTitle 비가 내릴 땐
+        //-         button 더보기
+        //-     .music-grid
+        //-         each music in musics
+        //-             +music(music)
+        //-         else
+        //-             span.empty__message 음악을 찾을 수 없습니다.
 
-        .musicThatUserTime.recommendWrap
-            .musicRecommendControl
-                span.musicRecommendTitle 저녁 드라이브
-                button 더보기
-            .music-grid
-                each music in musics
-                    +music(music)
-                else
-                    span.empty__message 음악을 찾을 수 없습니다.
+        //- .musicThatUserTime.recommendWrap
+        //-     .musicRecommendControl
+        //-         span.musicRecommendTitle 저녁 드라이브
+        //-         button 더보기
+        //-     .music-grid
+        //-         each music in musics
+        //-             +music(music)
+        //-         else
+        //-             span.empty__message 음악을 찾을 수 없습니다.
+
+        //- 예정 (최근에 추천된)
+
+block scripts
+    script(src="/assets/js/home.js") 

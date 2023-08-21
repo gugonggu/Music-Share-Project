@@ -2,10 +2,42 @@ import Music from "../models/Music";
 import User from "../models/User";
 
 export const home = async (req, res) => {
-    const musics = await Music.find({})
-        .sort({ createdAt: "desc" })
-        .populate("recommender");
-    return res.render("home", { pageTitle: "Home", musics });
+    const {
+        user: { _id },
+    } = req.session;
+    // 유저 검색
+    const user = await User.findById(_id).populate(
+        "musicListened.musicListenedId"
+    );
+    if (!user) {
+        return res.render("404", { pageTitle: "유저를 찾을 수 없습니다." });
+    }
+
+    // 랜덤 음악
+    const allMusic = await Music.find();
+    const randomMusicList = [];
+    const randomLimit = allMusic.length < 7 ? allMusic.length : 7;
+    while (randomMusicList.length < randomLimit) {
+        const randomIndex = Math.floor(Math.random() * allMusic.length);
+        if (randomMusicList.includes(allMusic[randomIndex])) {
+            continue;
+        }
+        randomMusicList.push(allMusic[randomIndex]);
+    }
+
+    // 유저가 들었던 음악
+    const userListenedMusics = [];
+    const listenedLimit =
+        user.musicListened.length < 7 ? user.musicListened.length : 7;
+    for (let i = 0; userListenedMusics.length < listenedLimit; i++) {
+        userListenedMusics.push(user.musicListened[i]);
+    }
+
+    return res.render("home", {
+        pageTitle: "Home",
+        randomMusicList,
+        userListenedMusics,
+    });
 };
 
 export const getUpload = (req, res) => {
@@ -277,9 +309,10 @@ export const randomMusic = async (req, res) => {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
     const allMusic = await Music.find().populate("recommender", "username");
+    const limit = allMusic.length < 9 ? allMusic.length : 9;
     const randomMusicList = [];
     randomMusicList.push(music);
-    while (randomMusicList.length < 9) {
+    while (randomMusicList.length < limit) {
         const randomIndex = Math.floor(Math.random() * allMusic.length);
         if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
             continue;
@@ -355,4 +388,25 @@ export const postListenCount = async (req, res) => {
     user.musicListened.push(obj);
     user.save();
     return res.sendStatus(200);
+};
+
+export const getMoreRandomMusic = async (req, res) => {
+    const {
+        body: { list },
+    } = req;
+    const allMusic = await Music.find();
+    const randomMusicList = [];
+    const randomLimit =
+        allMusic.length < list.length ? list.length - allMusic.length : 7;
+    while (randomMusicList.length < randomLimit) {
+        const randomIndex = Math.floor(Math.random() * allMusic.length);
+        if (
+            randomMusicList.includes(allMusic[randomIndex]) ||
+            list.includes(allMusic[randomIndex]._id.toString())
+        ) {
+            continue;
+        }
+        randomMusicList.push(allMusic[randomIndex]);
+    }
+    return res.status(200).json({ randomMusicList: randomMusicList });
 };

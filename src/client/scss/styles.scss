@@ -22,11 +22,37 @@
 // Defaults
 
 body {
+    img {
+        -webkit-user-drag: none;
+    }
+
     &::-webkit-scrollbar {
         display: none;
     }
 
     font-family: "Open Sans", "Noto Sans KR", sans-serif;
+
+    .textOverflow {
+        animation: textLoop 15s linear infinite;
+    }
+    @keyframes textLoop {
+        0% {
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+        25% {
+            -webkit-transform: translate3d(-20%, 0, 0);
+            transform: translate3d(-20%, 0, 0);
+        }
+        75% {
+            -webkit-transform: translate3d(20%, 0, 0);
+            transform: translate3d(20%, 0, 0);
+        }
+        100% {
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+        }
+    }
 
     background: linear-gradient(270deg, #3a6186, #89253e);
     background-size: 400% 400%;

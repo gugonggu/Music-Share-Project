@@ -30,17 +30,12 @@
                 font-weight: 500;
                 margin-bottom: 10px;
             }
-            .music__vertical-mixin-artist-and-recommender {
+            .music__vertical-mixin-artist-wrap {
                 width: 100%;
                 display: flex;
                 justify-content: space-between;
                 .music__vertical-mixin-artist {
                     color: rgb(190, 190, 190);
-                }
-                .music__vertical-mixin-recommender-wrap {
-                    span {
-                        color: rgb(190, 190, 190);
-                    }
                 }
             }
         }

@@ -1,0 +1,7 @@
+mixin userListenedMusic(music)
+    a.music-mixin(href=`/music/${music.musicListenedId._id}`)
+        .music-img-cutter
+            img(src=music.musicListenedId.musicInfo.musicThumbnailSrc, alt="")
+        .music-mixin__data
+            p.music-mixin__title #{ music.musicListenedId.title }
+            p.music-mixin__artist #{ music.musicListenedId.artist }

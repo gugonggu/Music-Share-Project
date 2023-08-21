@@ -9,10 +9,14 @@ block section
                     i.fa-solid.fa-arrow-left.fa-xl.music__icon-hover
                 .music__control-top-mid(data-loggedinuser=loggedInUser._id)
                     if String(music.recommender._id) === String(loggedInUser._id)
-                        a.music__verifiedButton(href=`${music.id}/edit`) 
+                        a#editButton.music__verifiedButton(
+                            href=`${music.id}/edit`
+                        )
                             i.fa-solid.fa-pen-to-square
                             span Edit Music
-                        a.music__verifiedButton(href=`${music.id}/delete`) 
+                        a#deleteButton.music__verifiedButton(
+                            href=`${music.id}/delete`
+                        )
                             i.fa-solid.fa-trash
                             span Delete Music
                     else
@@ -20,7 +24,7 @@ block section
                             a.music__recommender(
                                 href=`/users/${music.recommender._id}`
                             ) #{ music.recommender.username }
-                            span 님이 추천함
+                            span #{ " 님이 추천함" }
                 #moreBtn.music__icon-wrap
                     i.fa-solid.fa-ellipsis-vertical.fa-xl
             iframe#player(

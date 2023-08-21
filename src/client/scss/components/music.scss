@@ -29,10 +29,18 @@
         .music-mixin__data {
             color: white;
             margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            width: 230px;
+            white-space: nowrap;
+            overflow: hidden;
             .music-mixin__title {
                 margin-bottom: 5px;
+                width: min-content;
             }
             .music-mixin__artist {
+                width: min-content;
+                height: 17px;
                 font-size: 15px;
                 color: rgb(179, 179, 179);
             }

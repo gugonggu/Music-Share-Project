@@ -1,10 +1,13 @@
 const controlTopMid = document.querySelector(".music__control-top-mid");
+const editBtn = document.getElementById("editButton");
+const deleteBtn = document.getElementById("deleteButton");
 const loggedInUserId = controlTopMid.dataset.loggedinuser;
 const backBtn = document.getElementById("backBtn");
 const moreBtn = document.getElementById("moreBtn");
 const listenBlur = document.querySelector(".listenBlurDiv");
 const moreWrap = document.getElementById("moreWrap");
 const iframe = document.querySelector("iframe");
+const curMusicBox = document.querySelector(".music__data");
 const curMusicTitle = document.querySelector(".music__title");
 const curMusicArtist = document.querySelector(".music__artist");
 const dislikeBtn = document.getElementById("dislikeBtn");
@@ -31,15 +34,30 @@ const moreDislikeBtn = document.getElementById("moreDislikeBtn");
 const moreLikeBtn = document.getElementById("moreLikeBtn");
 const moreAnchor = document.getElementById("moreAnchor");
 
+window.addEventListener("popstate", () => {
+    location.href = "/";
+});
+
+const addOverflowTextAnimation = (outer, inner) => {
+    if (outer.clientWidth < inner.clientWidth) {
+        inner.classList.add("textOverflow");
+    } else {
+        inner.classList.remove("textOverflow");
+    }
+};
+
+addOverflowTextAnimation(curMusicBox, curMusicTitle);
+addOverflowTextAnimation(curMusicBox, curMusicArtist);
+
 let musics = document.querySelectorAll(".music__vertical");
 musics[0].classList.add("nowPlaying");
 
 const loggedInPage = (obj) => {
-    controlTopMid.innerHTML = `<a class="music__verifiedButton" href="${obj.dataset.musicid}/edit">
+    controlTopMid.innerHTML = `<a id="editButton" class="music__verifiedButton" href="${obj.dataset.musicid}/edit">
         <i class="fa-solid fa-pen-to-square"></i>
         <span>Edit Music</span>
     </a>
-    <a class="music__verifiedButton" href="${obj.dataset.musicid}/delete">
+    <a id="deleteButton" class="music__verifiedButton" href="${obj.dataset.musicid}/delete">
         <i class="fa-solid fa-trash"></i>
         <span>Delete Music</span>
     </a>
@@ -70,14 +88,15 @@ const changeCurMusicInfo = async (v) => {
         .querySelector("img").src;
     const title = v.querySelector("p").innerText;
     const artist = v.querySelector(".music__vertical-mixin-artist").innerText;
-    const recommender = v.querySelector(
-        ".music__vertical-mixin-recommender"
-    ).innerText;
-    const recommenderId = v.querySelector(".music__vertical-mixin-recommender")
+    const recommender = v.querySelector(".music__vertical-mixin-artist-wrap")
+        .dataset.recommender;
+    const recommenderId = v.querySelector(".music__vertical-mixin-artist-wrap")
         .dataset.recommenderid;
     document.title = `${title} | Chillin on the beat`;
     curMusicTitle.innerText = title;
     curMusicArtist.innerText = artist;
+    addOverflowTextAnimation(curMusicBox, curMusicTitle);
+    addOverflowTextAnimation(curMusicBox, curMusicArtist);
     moreImg.src = imgSrc;
     moreMusicTitle.innerText = title;
     moreMusicArtist.innerText = artist;
@@ -135,6 +154,7 @@ let list = [];
 
 musics.forEach((v) => {
     list.push(v);
+    addOverflowTextAnimation(curMusicBox, curMusicTitle);
     v.addEventListener("click", () => {
         changeCurMusicInfo(v);
         const musicsList = Array.prototype.slice.call(musics);
@@ -211,13 +231,18 @@ function onPlayerStateChange(e) {
                 }
             );
         })();
+        if (curMusic === list.length - 1) {
+            return;
+        }
+        curMusic++;
+        changeCurMusicInfo(list[curMusic]);
     } else {
         playIcon.classList.remove("fa-pause");
         playIcon.classList.add("fa-play");
     }
 }
 
-backBtn.addEventListener("click", () => {
+backBtn.addEventListener("click", async () => {
     history.back();
 });
 
@@ -388,7 +413,7 @@ soundInput.addEventListener("change", async () => {
 
 const printMusicList = (arr) => {
     musicList.innerHTML = "";
-    arr.forEach((v, i) => {
+    arr.forEach((v) => {
         let template = `
         <div class="music__vertical" data-musicid=${v._id} data-verticalmusicsrc=${v.musicInfo.musicSrc}>
             <div class="music__vertical-img-wrap">
@@ -396,12 +421,8 @@ const printMusicList = (arr) => {
             </div>
             <div class="music__vertical-mixin-data">
                 <p class="music__vertical-mixin-title">${v.title}</p>
-                <div class="music__vertical-mixin-artist-and-recommender">
+                <div class="music__vertical-mixin-artist-wrap" data-recommenderid=${v.recommender._id} data-recommender=${v.recommender.username}>
                     <span class="music__vertical-mixin-artist">${v.artist}</span>
-                    <div class="music__vertical-mixin-recommender-wrap">
-                        <a class="music__vertical-mixin-recommender" href="/users/${v.recommender._id}" data-recommenderid=${v.recommender._id}>${v.recommender.username}</a>
-                        <span>님이 추천함</span>
-                    </div>
                 </div>
             </div>
         </div>
