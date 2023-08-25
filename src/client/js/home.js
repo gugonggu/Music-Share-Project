@@ -1,6 +1,6 @@
 const randomMoreBtn = document.getElementById("randomMoreButton");
 const randomGrid = document.getElementById("randomGrid");
-const randomMusics = document.querySelectorAll(".randomMixin");
+let randomMusics = document.querySelectorAll(".randomMixin");
 
 const addOverflowTextAnimation = (outer, inner) => {
     if (outer.clientWidth < inner.clientWidth) {
@@ -37,6 +37,7 @@ const printRandomMusicList = (arr) => {
 
 randomMoreBtn.addEventListener("click", async () => {
     const list = [];
+    randomMusics = document.querySelectorAll(".randomMixin");
     randomMusics.forEach((v) => {
         const id = v.dataset.musicid;
         list.push(id);
@@ -49,7 +50,10 @@ randomMoreBtn.addEventListener("click", async () => {
         body: JSON.stringify({ list: list }),
     });
     if (response.status === 200) {
-        const { randomMusicList } = await response.json();
+        const { randomMusicList, isAll } = await response.json();
+        if (isAll) {
+            // 더보기 스타일 번경
+        }
         printRandomMusicList(randomMusicList);
     }
 });

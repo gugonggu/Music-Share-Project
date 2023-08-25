@@ -7,6 +7,7 @@ import {
     confirmLiked,
     postListenCount,
     getMoreRandomMusic,
+    getMoreSameGenreMusic,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
@@ -14,9 +15,14 @@ import { protectorMiddleware } from "../middlewares";
 const apiRouter = express.Router();
 
 apiRouter.patch(
-    "/get-more-randommusic",
+    "/musics/get-more-randommusic",
     protectorMiddleware,
     getMoreRandomMusic
+);
+apiRouter.patch(
+    "/musics/:id([0-9a-f]{24})/get-more-samegenremusic",
+    protectorMiddleware,
+    getMoreSameGenreMusic
 );
 
 apiRouter.post(
@@ -34,12 +40,12 @@ apiRouter.post(
     protectorMiddleware,
     musicLike
 );
-apiRouter.get(
+apiRouter.patch(
     "/musics/:id([0-9a-f]{24})/random",
     protectorMiddleware,
     randomMusic
 );
-apiRouter.get(
+apiRouter.patch(
     "/musics/:id([0-9a-f]{24})/sameGenre",
     protectorMiddleware,
     sameGenreMusic

@@ -17,6 +17,8 @@ const timeLeft = document.querySelector(".music__time-left");
 const timeTotal = document.querySelector(".music__time-total");
 const shuffleBtn = document.getElementById("shuffleBtn");
 const playBtn = document.getElementById("playBtn");
+const loopBtn = document.getElementById("loopBtn");
+const loopOne = loopBtn.querySelector("span");
 const prevBtn = document.getElementById("prevBtn");
 const playIcon = playBtn.querySelector("i");
 const nextBtn = document.getElementById("nextBtn");
@@ -27,6 +29,7 @@ const soundIcon = document.getElementById("soundIcon");
 const musicRandom = document.getElementById("musicRandom");
 const musicSameGenre = document.getElementById("musicSameGenre");
 const musicList = document.getElementById("musicList");
+const verticalMore = document.getElementById("verticalMore");
 const moreImg = document.getElementById("moreImg");
 const moreMusicTitle = document.querySelector(".more__music-title");
 const moreMusicArtist = document.querySelector(".more__music-artist");
@@ -151,8 +154,39 @@ const changeCurMusicInfo = async (v) => {
 };
 
 let list = [];
+let randomList = [];
 
 musics.forEach((v) => {
+    const randomId = v.dataset.musicid;
+    const randomMusicSrc = v.dataset.verticalmusicsrc;
+    const randomImgSrc = v
+        .querySelector(".music__vertical-img-wrap")
+        .querySelector("img").src;
+    const randomTitle = v.querySelector("p").innerText;
+    const randomArtist = v.querySelector(
+        ".music__vertical-mixin-artist"
+    ).innerText;
+    const randomRecommender = v.querySelector(
+        ".music__vertical-mixin-artist-wrap"
+    ).dataset.recommender;
+    const randomRecommenderId = v.querySelector(
+        ".music__vertical-mixin-artist-wrap"
+    ).dataset.recommenderid;
+    const randomObj = {
+        _id: randomId,
+        title: randomTitle,
+        artist: randomArtist,
+        musicInfo: {
+            musicSrc: randomMusicSrc,
+            musicThumbnailSrc: randomImgSrc,
+        },
+        recommender: {
+            _id: randomRecommenderId,
+            username: randomRecommender,
+        },
+    };
+    randomList.push(randomObj);
+
     list.push(v);
     addOverflowTextAnimation(curMusicBox, curMusicTitle);
     v.addEventListener("click", () => {
@@ -177,8 +211,7 @@ window.onYouTubeIframeAPIReady = function () {
     });
 };
 
-function onPlayerReady(e) {
-    // iframe 기본 소리 크기 설정
+function onPlayerReady() {
     (async () => {
         const response = await fetch(`/api/users/${loggedInUserId}/sound`, {
             method: "GET",
@@ -199,6 +232,7 @@ function onPlayerReady(e) {
                 soundIcon.classList.remove("fa-volume-high");
                 soundIcon.classList.add("fa-volume-low");
             } else {
+                soundIcon.classList.remove("fa-volume-off");
                 soundIcon.classList.remove("fa-volume-low");
                 soundIcon.classList.add("fa-volume-high");
             }
@@ -231,7 +265,13 @@ function onPlayerStateChange(e) {
                 }
             );
         })();
+        if (!isAllLoop) {
+            player.seekTo(0);
+            return;
+        }
         if (curMusic === list.length - 1) {
+            curMusic = 0;
+            changeCurMusicInfo(list[curMusic]);
             return;
         }
         curMusic++;
@@ -330,25 +370,10 @@ timeInput.addEventListener("input", () => {
     player.seekTo(Number(timeInput.value));
 });
 
-shuffleBtn.addEventListener("click", async () => {
-    const musicId = iframe.dataset.currentmusicid;
-    if (musicRandom.classList.contains("listSelected")) {
-        const response = await fetch(`/api/musics/${musicId}/random`, {
-            method: "GET",
-        });
-        if (response.status === 200) {
-            const { randomMusicList } = await response.json();
-            printMusicList(randomMusicList);
-        }
-    } else {
-        const response = await fetch(`/api/musics/${musicId}/sameGenre`, {
-            method: "GET",
-        });
-        if (response.status === 200) {
-            const { sameGenreList } = await response.json();
-            printMusicList(sameGenreList);
-        }
-    }
+let isAllLoop = true;
+loopBtn.addEventListener("click", () => {
+    isAllLoop = isAllLoop ? false : true;
+    loopOne.classList.toggle("none");
 });
 
 playBtn.addEventListener("click", () => {
@@ -446,16 +471,10 @@ musicRandom.addEventListener("click", async () => {
     if (musicRandom.classList.contains("listSelected")) {
         return;
     } else {
+        curMusic = 0;
         musicRandom.classList.add("listSelected");
         musicSameGenre.classList.remove("listSelected");
-        const musicId = iframe.dataset.currentmusicid;
-        const response = await fetch(`/api/musics/${musicId}/random`, {
-            method: "GET",
-        });
-        if (response.status === 200) {
-            const { randomMusicList } = await response.json();
-            printMusicList(randomMusicList);
-        }
+        printMusicList(randomList);
     }
 });
 
@@ -463,15 +482,126 @@ musicSameGenre.addEventListener("click", async () => {
     if (musicSameGenre.classList.contains("listSelected")) {
         return;
     } else {
+        curMusic = 0;
         musicSameGenre.classList.add("listSelected");
         musicRandom.classList.remove("listSelected");
         const musicId = iframe.dataset.currentmusicid;
         const response = await fetch(`/api/musics/${musicId}/sameGenre`, {
-            method: "GET",
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ list: list }),
         });
         if (response.status === 200) {
             const { sameGenreList } = await response.json();
             printMusicList(sameGenreList);
+        }
+    }
+});
+
+shuffleBtn.addEventListener("click", async () => {
+    const list = [];
+    musics.forEach((v) => {
+        list.push(v.dataset.musicid);
+    });
+    curMusic = 0;
+    const musicId = iframe.dataset.currentmusicid;
+    if (musicRandom.classList.contains("listSelected")) {
+        const response = await fetch(`/api/musics/${musicId}/random`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ list: list }),
+        });
+        if (response.status === 200) {
+            const { randomMusicList } = await response.json();
+            printMusicList(randomMusicList);
+        }
+    } else {
+        const response = await fetch(`/api/musics/${musicId}/sameGenre`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ list: list }),
+        });
+        if (response.status === 200) {
+            const { sameGenreList } = await response.json();
+            printMusicList(sameGenreList);
+        }
+    }
+});
+
+const printVerticalMusic = (arr) => {
+    arr.forEach((v) => {
+        const template = `
+        <div class="music__vertical" data-musicid=${v._id} data-verticalmusicsrc=${v.musicInfo.musicSrc}>
+            <div class="music__vertical-img-wrap">
+                <img src=${v.musicInfo.musicThumbnailSrc} alt=""></img>
+            </div>
+            <div class="music__vertical-mixin-data">
+                <p class="music__vertical-mixin-title">${v.title}</p>
+                <div class="music__vertical-mixin-artist-wrap" data-recommenderid=${v.recommender._id} data-recommender=${v.recommender.username}>
+                    <span class="music__vertical-mixin-artist">${v.artist}</span>
+                </div>
+            </div>
+        </div>
+        `;
+        musicList.innerHTML += template;
+    });
+    musics = document.querySelectorAll(".music__vertical");
+    musics[0].classList.add("nowPlaying");
+    list = [];
+    musics.forEach((v) => {
+        list.push(v);
+        v.addEventListener("click", () => {
+            changeCurMusicInfo(v);
+            const musicsList = Array.prototype.slice.call(musics);
+            curMusic = musicsList.indexOf(v);
+        });
+    });
+};
+
+verticalMore.addEventListener("click", async () => {
+    const list = [];
+    musics.forEach((v) => {
+        list.push(v.dataset.musicid);
+    });
+    if (musicRandom.classList.contains("listSelected")) {
+        const response = await fetch("/api/musics/get-more-randommusic", {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ list: list }),
+        });
+        if (response.status === 200) {
+            const { randomMusicList, isAll } = await response.json();
+            if (isAll) {
+                // 더보기 스타일 변경
+            }
+            printVerticalMusic(randomMusicList);
+        }
+    } else {
+        const musicId = iframe.dataset.currentmusicid;
+        const response = await fetch(
+            `/api/musics/${musicId}/get-more-samegenremusic`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ list: list }),
+            }
+        );
+        if (response.status === 200) {
+            const { sameGenreList, isAll } = await response.json();
+            if (isAll) {
+                // 더보기 스타일 변경
+            }
+            printVerticalMusic(sameGenreList);
         }
     }
 });

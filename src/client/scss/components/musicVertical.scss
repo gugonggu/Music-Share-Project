@@ -2,6 +2,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 608px;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: aliceblue;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
     .music__vertical {
         cursor: pointer;
         width: 90%;

@@ -53,8 +53,9 @@ block section
                         span.music__time-left 00:00
                         span.music__time-total 00:00
                 .music__control
-                    #shuffleBtn.music__icon-wrap
-                        i.fa-solid.fa-shuffle.fa-xl
+                    #loopBtn.music__icon-wrap
+                        i.fa-solid.fa-repeat.fa-xl
+                        span.none 1
                     #prevBtn.music__icon-wrap
                         i.fa-solid.fa-backward-step.fa-xl
                     #playBtn.music__play-icon-wrap.playing
@@ -76,11 +77,17 @@ block section
             .music__list-control
                 span#musicRandom.music__random-list.listSelected 랜덤 트랙 리스트
                 span#musicSameGenre.music__same-genre 같은 장르 리스트
+            .music__listInfoAndShuffle
+                span 현재 재생중인 리스트 셔플
+                #shuffleBtn.music__icon-wrap
+                    i.fa-solid.fa-shuffle
             #musicList.music__vertical-list
                 each vMusic in randomMusicList 
                     +musicVertical(vMusic)
                 else
                     span.empty__message 음악을 찾을 수 없습니다.
+            .music__listMore
+                button#verticalMore 더 보기
 
     #moreWrap.more-wrap.more-wrap-none
         .more__music

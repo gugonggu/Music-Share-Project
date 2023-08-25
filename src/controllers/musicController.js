@@ -90,7 +90,7 @@ export const listen = async (req, res) => {
     const allMusic = await Music.find().populate("recommender", "username");
     const randomMusicList = [];
     randomMusicList.push(music);
-    const limit = allMusic.length < 9 ? allMusic.length : 9;
+    const limit = allMusic.length < 8 ? allMusic.length : 8;
     while (randomMusicList.length < limit) {
         const randomIndex = Math.floor(Math.random() * allMusic.length);
         if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
@@ -303,13 +303,16 @@ export const musicLike = async (req, res) => {
 };
 
 export const randomMusic = async (req, res) => {
-    const { id } = req.params;
+    const {
+        body: { list },
+        params: { id },
+    } = req;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
     const allMusic = await Music.find().populate("recommender", "username");
-    const limit = allMusic.length < 9 ? allMusic.length : 9;
+    const limit = list.length;
     const randomMusicList = [];
     randomMusicList.push(music);
     while (randomMusicList.length < limit) {
@@ -326,16 +329,34 @@ export const randomMusic = async (req, res) => {
 };
 
 export const sameGenreMusic = async (req, res) => {
-    const { id } = req.params;
-    const music = await Music.findById(id);
+    const {
+        body: { list },
+        params: { id },
+    } = req;
+    const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
-    const sameGenreList = await Music.find({ genre: music.genre }).populate(
+    const allSameGenreList = await Music.find({ genre: music.genre }).populate(
         "recommender",
         "username"
     );
-    sameGenreList.sort(() => Math.random() - 0.5);
+    let sameGenreList = [];
+    const sameGenreLimit = list.length;
+    sameGenreList.push(music);
+    while (sameGenreList.length < sameGenreLimit) {
+        const randomIndex = Math.floor(Math.random() * allSameGenreList.length);
+        if (
+            music._id.toString() ===
+            allSameGenreList[randomIndex]._id.toString()
+        ) {
+            continue;
+        }
+        if (sameGenreList.includes(allSameGenreList[randomIndex])) {
+            continue;
+        }
+        sameGenreList.push(allSameGenreList[randomIndex]);
+    }
     return res.status(200).json({ sameGenreList: sameGenreList });
 };
 
@@ -396,8 +417,16 @@ export const getMoreRandomMusic = async (req, res) => {
     } = req;
     const allMusic = await Music.find();
     const randomMusicList = [];
-    const randomLimit =
-        allMusic.length < list.length ? list.length - allMusic.length : 7;
+    let randomLimit = 0;
+    if (list.length < allMusic.length) {
+        if (allMusic.length - list.length < 7) {
+            randomLimit = allMusic.length - list.length;
+        } else {
+            randomLimit = 7;
+        }
+    } else {
+        return res.sendStatus(304);
+    }
     while (randomMusicList.length < randomLimit) {
         const randomIndex = Math.floor(Math.random() * allMusic.length);
         if (
@@ -408,5 +437,48 @@ export const getMoreRandomMusic = async (req, res) => {
         }
         randomMusicList.push(allMusic[randomIndex]);
     }
-    return res.status(200).json({ randomMusicList: randomMusicList });
+    const isAll = randomLimit < 7 ? true : false;
+    return res
+        .status(200)
+        .json({ randomMusicList: randomMusicList, isAll: isAll });
+};
+
+export const getMoreSameGenreMusic = async (req, res) => {
+    const {
+        body: { list },
+        params: { id },
+    } = req;
+    const music = await Music.findById(id).populate("recommender", "username");
+    if (!music) {
+        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+    }
+    const allSameGenreList = await Music.find({ genre: music.genre }).populate(
+        "recommender",
+        "username"
+    );
+
+    const sameGenreList = [];
+    let sameGenreLimit = 0;
+    if (list.length < allSameGenreList.length) {
+        if (allSameGenreList.length - list.length < 7) {
+            sameGenreLimit = allSameGenreList.length - list.length;
+        } else {
+            sameGenreLimit = 7;
+        }
+    } else {
+        return res.sendStatus(304);
+    }
+
+    while (sameGenreList.length < sameGenreLimit) {
+        const randomIndex = Math.floor(Math.random() * allSameGenreList.length);
+        if (
+            sameGenreList.includes(allSameGenreList[randomIndex]) ||
+            list.includes(allSameGenreList[randomIndex]._id.toString())
+        ) {
+            continue;
+        }
+        sameGenreList.push(allSameGenreList[randomIndex]);
+    }
+    const isAll = sameGenreLimit < 7 ? true : false;
+    return res.status(200).json({ sameGenreList: sameGenreList, isAll: isAll });
 };

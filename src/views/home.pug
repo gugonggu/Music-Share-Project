@@ -7,7 +7,7 @@ block section
         .musicThatRandom.recommendWrap
             .musicRecommendControl
                 span.musicRecommendTitle 랜덤 음악
-                button#randomMoreButton 더보기
+                button#randomMoreButton 더 보기
             #randomGrid.music-grid
                 each music in randomMusicList
                     +music(music)
@@ -17,7 +17,7 @@ block section
         .musicThatUserListened.recommendWrap
             .musicRecommendControl
                 span.musicRecommendTitle 다시 듣기
-                button 더보기
+                button 더 보기
             .music-grid
                 each music in userListenedMusics
                     +userListenedMusic(music)
@@ -27,7 +27,7 @@ block section
         //- .musicThatUserWeather.recommendWrap
         //-     .musicRecommendControl
         //-         span.musicRecommendTitle 비가 내릴 땐
-        //-         button 더보기
+        //-         button 더 보기
         //-     .music-grid
         //-         each music in musics
         //-             +music(music)
@@ -37,7 +37,7 @@ block section
         //- .musicThatUserTime.recommendWrap
         //-     .musicRecommendControl
         //-         span.musicRecommendTitle 저녁 드라이브
-        //-         button 더보기
+        //-         button 더 보기
         //-     .music-grid
         //-         each music in musics
         //-             +music(music)
