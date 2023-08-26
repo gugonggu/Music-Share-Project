@@ -29,14 +29,22 @@ export const home = async (req, res) => {
     const userListenedMusics = [];
     const listenedLimit =
         user.musicListened.length < 7 ? user.musicListened.length : 7;
-    for (let i = 0; userListenedMusics.length < listenedLimit; i++) {
-        userListenedMusics.push(user.musicListened[i]);
+    while (userListenedMusics.length < listenedLimit) {
+        const randomIndex = Math.floor(
+            Math.random() * user.musicListened.length
+        );
+        if (userListenedMusics.includes(user.musicListened[randomIndex])) {
+            continue;
+        }
+        userListenedMusics.push(user.musicListened[randomIndex]);
     }
+    const cantMoreListened = listenedLimit < 7 ? true : false;
 
     return res.render("home", {
         pageTitle: "Home",
         randomMusicList,
         userListenedMusics,
+        cantMoreListened,
     });
 };
 
@@ -342,7 +350,8 @@ export const sameGenreMusic = async (req, res) => {
         "username"
     );
     let sameGenreList = [];
-    const sameGenreLimit = list.length;
+    const sameGenreLimit =
+        allSameGenreList.length < 8 ? allSameGenreList.length : 8;
     sameGenreList.push(music);
     while (sameGenreList.length < sameGenreLimit) {
         const randomIndex = Math.floor(Math.random() * allSameGenreList.length);
@@ -481,4 +490,48 @@ export const getMoreSameGenreMusic = async (req, res) => {
     }
     const isAll = sameGenreLimit < 7 ? true : false;
     return res.status(200).json({ sameGenreList: sameGenreList, isAll: isAll });
+};
+
+export const getMoreListenedMusic = async (req, res) => {
+    const {
+        body: { list },
+        session: {
+            user: { _id },
+        },
+    } = req;
+    const user = await User.findById(_id).populate(
+        "musicListened.musicListenedId"
+    );
+    if (!user) {
+        return res.render("404", { pageTitle: "유저를 찾을 수 없습니다." });
+    }
+    const listenedList = [];
+    let listenedLimit = 0;
+    if (list.length < user.musicListened.length) {
+        if (user.musicListened.length - list.length < 7) {
+            listenedLimit = user.musicListened.length - list.length;
+        } else {
+            listenedLimit = 7;
+        }
+    } else {
+        return res.sendStatus(304);
+    }
+    while (listenedList.length < listenedLimit) {
+        const randomIndex = Math.floor(
+            Math.random() * user.musicListened.length
+        );
+        if (
+            listenedList.includes(
+                user.musicListened[randomIndex].musicListenedId
+            ) ||
+            list.includes(
+                user.musicListened[randomIndex].musicListenedId._id.toString()
+            )
+        ) {
+            continue;
+        }
+        listenedList.push(user.musicListened[randomIndex].musicListenedId);
+    }
+    const isAll = listenedLimit < 7 ? true : false;
+    return res.status(200).json({ listenedList: listenedList, isAll: isAll });
 };

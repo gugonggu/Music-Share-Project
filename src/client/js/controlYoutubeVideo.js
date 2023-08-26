@@ -18,6 +18,7 @@ const timeTotal = document.querySelector(".music__time-total");
 const shuffleBtn = document.getElementById("shuffleBtn");
 const playBtn = document.getElementById("playBtn");
 const loopBtn = document.getElementById("loopBtn");
+const loopIcon = loopBtn.querySelector("i");
 const loopOne = loopBtn.querySelector("span");
 const prevBtn = document.getElementById("prevBtn");
 const playIcon = playBtn.querySelector("i");
@@ -265,17 +266,105 @@ function onPlayerStateChange(e) {
                 }
             );
         })();
-        if (!isAllLoop) {
+        if (loopCount === 1) {
+            if (curMusic === list.length - 1) {
+                (async () => {
+                    const list = [];
+                    musics.forEach((v) => {
+                        list.push(v.dataset.musicid);
+                    });
+                    if (musicRandom.classList.contains("listSelected")) {
+                        const response = await fetch(
+                            "/api/musics/get-more-randommusic",
+                            {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ list: list }),
+                            }
+                        );
+                        if (response.status === 200) {
+                            const { randomMusicList, isAll } =
+                                await response.json();
+                            if (isAll) {
+                                randomAll = isAll;
+                                verticalMore.classList.add("cantmore");
+                            }
+                            printVerticalMusic(randomMusicList);
+                        }
+                        randomList = [];
+                        musics.forEach((v) => {
+                            const randomId = v.dataset.musicid;
+                            const randomMusicSrc = v.dataset.verticalmusicsrc;
+                            const randomImgSrc = v
+                                .querySelector(".music__vertical-img-wrap")
+                                .querySelector("img").src;
+                            const randomTitle = v.querySelector("p").innerText;
+                            const randomArtist = v.querySelector(
+                                ".music__vertical-mixin-artist"
+                            ).innerText;
+                            const randomRecommender = v.querySelector(
+                                ".music__vertical-mixin-artist-wrap"
+                            ).dataset.recommender;
+                            const randomRecommenderId = v.querySelector(
+                                ".music__vertical-mixin-artist-wrap"
+                            ).dataset.recommenderid;
+                            const randomObj = {
+                                _id: randomId,
+                                title: randomTitle,
+                                artist: randomArtist,
+                                musicInfo: {
+                                    musicSrc: randomMusicSrc,
+                                    musicThumbnailSrc: randomImgSrc,
+                                },
+                                recommender: {
+                                    _id: randomRecommenderId,
+                                    username: randomRecommender,
+                                },
+                            };
+                            randomList.push(randomObj);
+                        });
+                    } else {
+                        const musicId = iframe.dataset.currentmusicid;
+                        const response = await fetch(
+                            `/api/musics/${musicId}/get-more-samegenremusic`,
+                            {
+                                method: "PATCH",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ list: list }),
+                            }
+                        );
+                        if (response.status === 200) {
+                            const { sameGenreList, isAll } =
+                                await response.json();
+                            if (isAll) {
+                                verticalMore.classList.add("cantmore");
+                            }
+                            printVerticalMusic(sameGenreList);
+                        }
+                    }
+                })().then(() => {
+                    curMusic++;
+                    changeCurMusicInfo(list[curMusic]);
+                });
+            } else {
+                curMusic++;
+                changeCurMusicInfo(list[curMusic]);
+            }
+        } else if (loopCount === 2) {
+            if (curMusic === list.length - 1) {
+                curMusic = 0;
+                changeCurMusicInfo(list[curMusic]);
+            } else {
+                curMusic++;
+                changeCurMusicInfo(list[curMusic]);
+            }
+        } else {
             player.seekTo(0);
-            return;
         }
-        if (curMusic === list.length - 1) {
-            curMusic = 0;
-            changeCurMusicInfo(list[curMusic]);
-            return;
-        }
-        curMusic++;
-        changeCurMusicInfo(list[curMusic]);
     } else {
         playIcon.classList.remove("fa-pause");
         playIcon.classList.add("fa-play");
@@ -370,10 +459,22 @@ timeInput.addEventListener("input", () => {
     player.seekTo(Number(timeInput.value));
 });
 
-let isAllLoop = true;
+let loopCount = 1;
 loopBtn.addEventListener("click", () => {
-    isAllLoop = isAllLoop ? false : true;
-    loopOne.classList.toggle("none");
+    if (loopCount === 1) {
+        // 반복 없음 -> 전체 반복
+        loopIcon.style.color = "white";
+        loopCount++;
+    } else if (loopCount === 2) {
+        // 전체 반복 -> 한곡 반복
+        loopOne.classList.remove("none");
+        loopCount++;
+    } else {
+        // 한곡 반복 -> 반복 없음
+        loopIcon.style.color = "gray";
+        loopOne.classList.add("none");
+        loopCount = 1;
+    }
 });
 
 playBtn.addEventListener("click", () => {
@@ -475,6 +576,11 @@ musicRandom.addEventListener("click", async () => {
         musicRandom.classList.add("listSelected");
         musicSameGenre.classList.remove("listSelected");
         printMusicList(randomList);
+        if (randomAll) {
+            verticalMore.classList.add("cantmore");
+        } else {
+            verticalMore.classList.remove("cantmore");
+        }
     }
 });
 
@@ -496,6 +602,7 @@ musicSameGenre.addEventListener("click", async () => {
         if (response.status === 200) {
             const { sameGenreList } = await response.json();
             printMusicList(sameGenreList);
+            verticalMore.classList.remove("cantmore");
         }
     }
 });
@@ -530,6 +637,7 @@ shuffleBtn.addEventListener("click", async () => {
         if (response.status === 200) {
             const { sameGenreList } = await response.json();
             printMusicList(sameGenreList);
+            verticalMore.classList.remove("cantmore");
         }
     }
 });
@@ -564,6 +672,7 @@ const printVerticalMusic = (arr) => {
     });
 };
 
+let randomAll = false;
 verticalMore.addEventListener("click", async () => {
     const list = [];
     musics.forEach((v) => {
@@ -580,10 +689,43 @@ verticalMore.addEventListener("click", async () => {
         if (response.status === 200) {
             const { randomMusicList, isAll } = await response.json();
             if (isAll) {
-                // 더보기 스타일 변경
+                randomAll = isAll;
+                verticalMore.classList.add("cantmore");
             }
             printVerticalMusic(randomMusicList);
         }
+        randomList = [];
+        musics.forEach((v) => {
+            const randomId = v.dataset.musicid;
+            const randomMusicSrc = v.dataset.verticalmusicsrc;
+            const randomImgSrc = v
+                .querySelector(".music__vertical-img-wrap")
+                .querySelector("img").src;
+            const randomTitle = v.querySelector("p").innerText;
+            const randomArtist = v.querySelector(
+                ".music__vertical-mixin-artist"
+            ).innerText;
+            const randomRecommender = v.querySelector(
+                ".music__vertical-mixin-artist-wrap"
+            ).dataset.recommender;
+            const randomRecommenderId = v.querySelector(
+                ".music__vertical-mixin-artist-wrap"
+            ).dataset.recommenderid;
+            const randomObj = {
+                _id: randomId,
+                title: randomTitle,
+                artist: randomArtist,
+                musicInfo: {
+                    musicSrc: randomMusicSrc,
+                    musicThumbnailSrc: randomImgSrc,
+                },
+                recommender: {
+                    _id: randomRecommenderId,
+                    username: randomRecommender,
+                },
+            };
+            randomList.push(randomObj);
+        });
     } else {
         const musicId = iframe.dataset.currentmusicid;
         const response = await fetch(
@@ -599,7 +741,7 @@ verticalMore.addEventListener("click", async () => {
         if (response.status === 200) {
             const { sameGenreList, isAll } = await response.json();
             if (isAll) {
-                // 더보기 스타일 변경
+                verticalMore.classList.add("cantmore");
             }
             printVerticalMusic(sameGenreList);
         }

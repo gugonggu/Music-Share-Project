@@ -4,7 +4,7 @@ include ../mixins/music
 block section
     .profile__data
         h3= user.username
-    .music-grid(data-userdata=user._id)
+    #myMusicGrid.music-grid(data-userdata=user._id)
         each music in user.musics
             +music(music)
         else

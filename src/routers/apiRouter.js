@@ -8,6 +8,7 @@ import {
     postListenCount,
     getMoreRandomMusic,
     getMoreSameGenreMusic,
+    getMoreListenedMusic,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
@@ -18,6 +19,11 @@ apiRouter.patch(
     "/musics/get-more-randommusic",
     protectorMiddleware,
     getMoreRandomMusic
+);
+apiRouter.patch(
+    "/musics/get-more-listenedmusic",
+    protectorMiddleware,
+    getMoreListenedMusic
 );
 apiRouter.patch(
     "/musics/:id([0-9a-f]{24})/get-more-samegenremusic",

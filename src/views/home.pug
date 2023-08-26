@@ -17,8 +17,11 @@ block section
         .musicThatUserListened.recommendWrap
             .musicRecommendControl
                 span.musicRecommendTitle 다시 듣기
-                button 더 보기
-            .music-grid
+                if cantMoreListened
+                    button#listenedMoreBtn.cantmore 더 보기
+                else
+                    button#listenedMoreBtn 더 보기
+            #listenedGrid.music-grid
                 each music in userListenedMusics
                     +userListenedMusic(music)
                 else

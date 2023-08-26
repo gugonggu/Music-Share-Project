@@ -117,6 +117,9 @@ a {
 
                 #loopBtn {
                     position: relative;
+                    i {
+                        color: gray;
+                    }
                     span {
                         position: absolute;
                         font-size: 10px;
@@ -226,6 +229,14 @@ a {
                 font-family: "Open Sans", "Noto Sans KR", sans-serif;
                 &:hover {
                     background-color: rgba(150, 150, 150, 0.5);
+                }
+                &.cantmore {
+                    cursor: default;
+                    border: 1px solid rgba(150, 150, 150, 0.3);
+                    color: rgba(150, 150, 150, 0.3);
+                    &:hover {
+                        background-color: transparent;
+                    }
                 }
             }
         }
