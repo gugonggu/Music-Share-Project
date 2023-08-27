@@ -5,6 +5,7 @@ const listenedGrid = document.getElementById("listenedGrid");
 let allMusics = document.querySelectorAll(".music-mixin");
 let randomMusics = document.querySelectorAll(".randomMixin");
 let listenedMusics = document.querySelectorAll(".listenedMixin");
+let weatherMusics = document.querySelectorAll(".weatherMixin");
 
 const addOverflowTextAnimation = (outer, inner) => {
     if (outer.clientWidth < inner.clientWidth) {
@@ -99,7 +100,6 @@ listenedMoreBtn.addEventListener("click", async () => {
     });
     if (response.status === 200) {
         const { listenedList, isAll } = await response.json();
-        console.log(listenedList, isAll);
         if (isAll) {
             listenedMoreBtn.classList.add("cantmore");
         }
@@ -107,4 +107,80 @@ listenedMoreBtn.addEventListener("click", async () => {
         listenedMusics = document.querySelectorAll(".listenedMixin");
         reAddAnimation(listenedMusics);
     }
+});
+
+const printWeathermMusicList = (arr, weatherData) => {
+    arr.forEach((v) => {
+        const template = `
+        <a class="music-mixin weatherMixin" href="/music/${v._id}?weather=${weatherData}" data-musicid=${v._id}>
+            <div class="music-img-cutter">
+                <img src=${v.musicInfo.musicThumbnailSrc} alt="">
+            </div>
+            <div class="music-mixin__data">
+                <span class="music-mixin__title">${v.title}</span>
+                <span class="music-mixin__artist">${v.artist}</span>
+            </div>
+        </a>
+        `;
+        weatherGrid.innerHTML += template;
+    });
+};
+// 날씨 가져오기
+const weatherSpan = document.querySelector(".weather");
+const weatherIcon = document.querySelector(".weatherIcon");
+const weatherTitle = document.getElementById("weatherTitle");
+const weatherGrid = document.getElementById("weatherGrid");
+const weatherMoreBtn = document.getElementById("weatherMoreBtn");
+const API_KEY = "7ec06aa850b4dd036da0531079c5d23b";
+let lat = "";
+let lon = "";
+let weatherApiUrl = "";
+let weather = "";
+const successGetLocation = (position) => {
+    lat = position.coords.latitude;
+    lon = position.coords.longitude;
+    weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+    fetch(weatherApiUrl)
+        .then((response) => response.json())
+        .then(async (data) => {
+            weather = data.weather[0].main;
+            const list = [];
+            weatherMusics = document.querySelectorAll(".weatherMixin");
+            weatherMusics.forEach((v) => {
+                const id = v.dataset.musicid;
+                list.push(id);
+            });
+            const response = await fetch("/api/musics/recommend-by-weather", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ weather: weather, list: list }),
+            });
+            if (response.status === 200) {
+                const { randomWeatherMusicList, isAll, weatherTitleValue } =
+                    await response.json();
+                if (isAll) {
+                    weatherMoreBtn.classList.add("cantmore");
+                }
+                weatherTitle.innerText = weatherTitleValue;
+                printWeathermMusicList(randomWeatherMusicList, weather);
+                weatherMusics = document.querySelectorAll(".weatherMixin");
+                reAddAnimation(weatherMusics);
+            }
+
+            weatherSpan.innerText = data.weather[0].main;
+            weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
+        })
+        .catch((error) => {
+            alert(error);
+        });
+};
+const failGetLocation = () => {
+    weatherSpan.innerText = "날씨 정보를 가져올 수 없습니다.";
+};
+navigator.geolocation.getCurrentPosition(successGetLocation, failGetLocation);
+
+weatherMoreBtn.addEventListener("click", () => {
+    console.log(lat, lon, weatherApiUrl);
 });

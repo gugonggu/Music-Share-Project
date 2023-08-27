@@ -1,0 +1,39 @@
+#uploadForm {
+    position: relative;
+    #genreSelect {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+            width: 10px;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: aliceblue;
+            border-radius: 10px;
+        }
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        padding: 10px;
+        width: 56%;
+        height: 134px;
+        position: absolute;
+        bottom: -11px;
+        left: 50%;
+        transform: translate(-50%);
+        border: 1px solid white;
+        border-radius: 10px;
+        background-color: rgb(24, 24, 24);
+        &.selectNone {
+            display: none;
+        }
+        span {
+            cursor: pointer;
+            border: 1px solid rgb(59, 59, 73);
+            border-radius: 10px;
+            background-color: rgb(24, 24, 24);
+            padding: 4px 8px;
+        }
+    }
+}

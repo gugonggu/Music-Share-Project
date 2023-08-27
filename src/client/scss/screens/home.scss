@@ -8,20 +8,32 @@
         margin-top: 60px;
         margin-bottom: 20px;
         .musicRecommendControl {
-            position: relative;
+            display: flex;
+            justify-content: space-between;
             height: 50px;
+            .weatherDataWrap {
+                display: flex;
+                align-items: center;
+                height: 50px;
+                span {
+                    font-size: 26px;
+                    font-weight: 600;
+                }
+                img {
+                    width: 50px;
+                    height: 50px;
+                }
+            }
             span {
-                position: absolute;
-                bottom: 20px;
-                left: 0px;
                 font-size: 26px;
                 font-weight: 600;
             }
             button {
-                bottom: 20px;
-                right: 0;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-self: center;
                 cursor: pointer;
-                position: absolute;
                 background-color: transparent;
                 color: white;
                 padding: 5px 10px;

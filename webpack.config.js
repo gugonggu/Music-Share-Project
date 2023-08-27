@@ -8,6 +8,7 @@ module.exports = {
         main: BASE_JS + "main.js",
         home: BASE_JS + "home.js",
         controlYoutubeVideo: BASE_JS + "controlYoutubeVideo.js",
+        upload: BASE_JS + "upload.js",
     },
     mode: "development",
     watch: true,

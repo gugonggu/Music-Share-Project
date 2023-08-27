@@ -41,7 +41,8 @@ body {
 
             .pageTitleA {
                 position: absolute;
-                left: 44.3%;
+                left: 50%;
+                transform: translate(-50%);
                 font-family: "Dancing Script", cursive;
                 font-size: 24px;
                 &:hover {

@@ -1,6 +1,6 @@
 mixin userListenedMusic(music)
     a.music-mixin.listenedMixin(
-        href=`/music/${music.musicListenedId._id}`,
+        href=`/music/${music.musicListenedId._id}?re=true`,
         data-musicid=music._id
     )
         .music-img-cutter

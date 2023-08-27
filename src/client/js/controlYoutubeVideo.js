@@ -576,7 +576,7 @@ musicRandom.addEventListener("click", async () => {
         musicRandom.classList.add("listSelected");
         musicSameGenre.classList.remove("listSelected");
         printMusicList(randomList);
-        if (randomAll) {
+        if (randomList.length < 8 || randomAll) {
             verticalMore.classList.add("cantmore");
         } else {
             verticalMore.classList.remove("cantmore");
@@ -603,6 +603,9 @@ musicSameGenre.addEventListener("click", async () => {
             const { sameGenreList } = await response.json();
             printMusicList(sameGenreList);
             verticalMore.classList.remove("cantmore");
+        }
+        if (list.length < 8) {
+            verticalMore.classList.add("cantmore");
         }
     }
 });

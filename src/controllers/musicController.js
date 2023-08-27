@@ -24,6 +24,7 @@ export const home = async (req, res) => {
         }
         randomMusicList.push(allMusic[randomIndex]);
     }
+    const cantMoreRandom = randomLimit < 7 ? true : false;
 
     // 유저가 들었던 음악
     const userListenedMusics = [];
@@ -40,11 +41,23 @@ export const home = async (req, res) => {
     }
     const cantMoreListened = listenedLimit < 7 ? true : false;
 
+    // 날씨 불러오기
+
+    // 시간 불러오기
+    const now = new Date();
+    const hour = now.getHours();
+
+    // 계절 (월) 불러오기
+    const month = now.getMonth() + 1;
+
     return res.render("home", {
         pageTitle: "Home",
         randomMusicList,
+        cantMoreRandom,
         userListenedMusics,
         cantMoreListened,
+        hour,
+        month,
     });
 };
 
@@ -59,6 +72,19 @@ export const postUpload = async (req, res) => {
     const { title, artist, musicUrl, genre } = req.body;
 
     const youtubeVideoId = Music.getYoutubeVideoId(musicUrl);
+
+    const allMusics = await Music.find();
+    if (allMusics.findIndex((i) => i.title === title) !== -1) {
+        if (
+            allMusics[allMusics.findIndex((i) => i.title === title)].artist ===
+            artist
+        ) {
+            return res.status(400).render("musics/upload", {
+                pageTitle: "Upload Music",
+                errorMessage: "이미 추천되어있는 음악입니다.",
+            });
+        }
+    }
 
     try {
         const newMusic = await Music.create({
@@ -90,28 +116,51 @@ export const listen = async (req, res) => {
     const {
         user: { _id },
     } = req.session;
+    const { re } = req.query;
+    const { weather } = req.query;
+    const { time } = req.query;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
         return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
-    // 랜덤 트랙 리스트 구현 코드
-    const allMusic = await Music.find().populate("recommender", "username");
-    const randomMusicList = [];
-    randomMusicList.push(music);
-    const limit = allMusic.length < 8 ? allMusic.length : 8;
-    while (randomMusicList.length < limit) {
-        const randomIndex = Math.floor(Math.random() * allMusic.length);
-        if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
-            continue;
+    let vList = [];
+    const user = await User.findById(_id).populate(
+        "musicListened.musicListenedId"
+    );
+    if (re) {
+        vList.push(music);
+        const limit = user.musicListened.length < 8 ? user.musicListened : 8;
+        while (vList.length < limit) {
+            const randomIndex = Math.floor(Math.random() * allMusic.length);
+            if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
+                continue;
+            }
+            if (vList.includes(allMusic[randomIndex])) {
+                continue;
+            }
+            vList.push(allMusic[randomIndex]);
         }
-        if (randomMusicList.includes(allMusic[randomIndex])) {
-            continue;
+    } else if (weather) {
+        // 이 파일 맨 밑에거 로직 잘 생각해서 붙여 넣어
+    } else if (time) {
+    } else {
+        // 랜덤 트랙 리스트 구현 코드
+        const allMusic = await Music.find().populate("recommender", "username");
+        vList.push(music);
+        const limit = allMusic.length < 8 ? allMusic.length : 8;
+        while (vList.length < limit) {
+            const randomIndex = Math.floor(Math.random() * allMusic.length);
+            if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
+                continue;
+            }
+            if (vList.includes(allMusic[randomIndex])) {
+                continue;
+            }
+            vList.push(allMusic[randomIndex]);
         }
-        randomMusicList.push(allMusic[randomIndex]);
     }
 
     // 유저 좋아요 / 싫어요 확인
-    const user = await User.findById(_id);
     let isLiked = null;
     if (user.musicLikes.includes(id)) {
         for (let i = 0; i < user.musicLikes.length; i++) {
@@ -133,7 +182,7 @@ export const listen = async (req, res) => {
     return res.render("musics/listen", {
         pageTitle: music.title,
         music: music,
-        randomMusicList: randomMusicList,
+        vList: vList,
         isLiked: isLiked,
     });
 };
@@ -200,6 +249,15 @@ export const deleteMusic = async (req, res) => {
     );
     user.musics = filteredUserMusic;
     await user.save();
+
+    const allUser = await User.find();
+    for (let i = 0; i < allUser.length; i++) {
+        const filteredUserListended = allUser[i].musicListened.filter(
+            (value) => String(value.musicListenedId) !== String(id)
+        );
+        allUser[i].musicListened = filteredUserListended;
+        await allUser[i].save();
+    }
     await Music.findByIdAndDelete(id);
     return res.redirect("/");
 };
@@ -534,4 +592,134 @@ export const getMoreListenedMusic = async (req, res) => {
     }
     const isAll = listenedLimit < 7 ? true : false;
     return res.status(200).json({ listenedList: listenedList, isAll: isAll });
+};
+
+export const getMusicsByWeather = async (req, res) => {
+    const {
+        body: { weather, list },
+    } = req;
+    const rainy = ["Drizzle", "Rain"];
+    const foggy = [
+        "Mist",
+        "Smoke",
+        "Haze",
+        "Dust",
+        "Fog",
+        "Sand",
+        "Dust",
+        "Ash",
+        "Squall",
+        "Tornado",
+    ];
+    const getMusicsAndReturn = (musicFound) => {
+        const randomWeatherMusicList = [];
+        let weatherLimit = 0;
+        if (list.length < musicFound.length) {
+            if (musicFound.length - list.length < 7) {
+                weatherLimit = musicFound.length - list.length;
+            } else {
+                weatherLimit = 7;
+            }
+        } else {
+            return res.sendStatus(304);
+        }
+        while (randomWeatherMusicList.length < weatherLimit) {
+            const randomIndex = Math.floor(Math.random() * musicFound.length);
+            if (
+                randomWeatherMusicList.includes(musicFound[randomIndex]) ||
+                list.includes(musicFound[randomIndex]._id.toString())
+            ) {
+                continue;
+            }
+            randomWeatherMusicList.push(musicFound[randomIndex]);
+        }
+        const isAll = weatherLimit < 7 ? true : false;
+        return { functionList: randomWeatherMusicList, functionAll: isAll };
+    };
+    if (
+        rainy.includes(weather) ||
+        foggy.includes(weather) ||
+        weather === "Clouds"
+    ) {
+        const musics = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "포크/어쿠스틱",
+                    "알앤비/소울",
+                    "재즈",
+                    "인디",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        const weatherTitleValue =
+            weather === "Clouds" ? "흐린 날씨엔" : "비가 오는 하루";
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+            weatherTitleValue: weatherTitleValue,
+        });
+    } else if (weather === "Thunderstorm") {
+        const musics = await Music.find({
+            genre: {
+                $in: ["댄스/팝", "랩/힙합", "일렉트로닉", "락/메탈"],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        const weatherTitleValue = "천둥도 덮어버릴 신나는 음악";
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+            weatherTitleValue: weatherTitleValue,
+        });
+    } else if (weather === "Clear") {
+        const musics = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "포크/어쿠스틱",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "재즈",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "J-POP",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        const weatherTitleValue = "어떤 음악을 들어도 좋은 맑은 날";
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+            weatherTitleValue: weatherTitleValue,
+        });
+    } else if (weather === "Snow") {
+        const musics = await Music.find({
+            genre: "캐롤",
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        const weatherTitleValue = "눈 오는 날엔 캐롤";
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+            weatherTitleValue: weatherTitleValue,
+        });
+    } else {
+        const functionList = [];
+        const functionAll = true;
+        const weatherTitleValue = "날씨 정보 수집에 오류가 발생했습니다";
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+            weatherTitleValue: weatherTitleValue,
+        });
+    }
 };

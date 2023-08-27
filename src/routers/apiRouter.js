@@ -9,12 +9,33 @@ import {
     getMoreRandomMusic,
     getMoreSameGenreMusic,
     getMoreListenedMusic,
+    getMusicsByWeather,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
 
 const apiRouter = express.Router();
 
+apiRouter.patch(
+    "/musics/recommend-by-weather",
+    protectorMiddleware,
+    getMusicsByWeather
+);
+apiRouter.patch(
+    "/musics/:id([0-9a-f]{24})/random",
+    protectorMiddleware,
+    randomMusic
+);
+apiRouter.patch(
+    "/musics/:id([0-9a-f]{24})/sameGenre",
+    protectorMiddleware,
+    sameGenreMusic
+);
+apiRouter.patch(
+    "/musics/:id([0-9a-f]{24})/confirmLiked",
+    protectorMiddleware,
+    confirmLiked
+);
 apiRouter.patch(
     "/musics/get-more-randommusic",
     protectorMiddleware,
@@ -46,21 +67,7 @@ apiRouter.post(
     protectorMiddleware,
     musicLike
 );
-apiRouter.patch(
-    "/musics/:id([0-9a-f]{24})/random",
-    protectorMiddleware,
-    randomMusic
-);
-apiRouter.patch(
-    "/musics/:id([0-9a-f]{24})/sameGenre",
-    protectorMiddleware,
-    sameGenreMusic
-);
-apiRouter.patch(
-    "/musics/:id([0-9a-f]{24})/confirmLiked",
-    protectorMiddleware,
-    confirmLiked
-);
+
 apiRouter
     .route("/users/:id([0-9a-f]{24})/sound")
     .all(protectorMiddleware)

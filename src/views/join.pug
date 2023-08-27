@@ -2,7 +2,7 @@ extends base.pug
 
 block section
     if errorMessage
-        span= errorMessage
+        span.message.error= errorMessage
     form.defaultFormStyle(method="POST")
         span.formTopSpan 회원가입
         input(name="name", type="text", required, placeholder="이름")

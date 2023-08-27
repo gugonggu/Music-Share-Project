@@ -7,7 +7,10 @@ block section
         .musicThatRandom.recommendWrap
             .musicRecommendControl
                 span.musicRecommendTitle 랜덤 음악
-                button#randomMoreButton 더 보기
+                if cantMoreRandom
+                    button#randomMoreButton.cantmore 더 보기
+                else
+                    button#randomMoreButton 더 보기
             #randomGrid.music-grid
                 each music in randomMusicList
                     +music(music)
@@ -25,27 +28,29 @@ block section
                 each music in userListenedMusics
                     +userListenedMusic(music)
                 else
-                    span.empty__message 음악을 찾을 수 없습니다.
+                    span.empty__message 음악을 들었던 기록이 없습니다.
 
-        //- .musicThatUserWeather.recommendWrap
-        //-     .musicRecommendControl
-        //-         span.musicRecommendTitle 비가 내릴 땐
-        //-         button 더 보기
-        //-     .music-grid
-        //-         each music in musics
-        //-             +music(music)
-        //-         else
-        //-             span.empty__message 음악을 찾을 수 없습니다.
+        .musicThatUserWeather.recommendWrap
+            .musicRecommendControl
+                .weatherDataWrap
+                    span#weatherTitle.musicRecommendTitle 날씨추천
+                    img.weatherIcon(src="", alt="")
+                button#weatherMoreBtn 더 보기
+            #weatherGrid.music-grid
 
-        //- .musicThatUserTime.recommendWrap
-        //-     .musicRecommendControl
-        //-         span.musicRecommendTitle 저녁 드라이브
-        //-         button 더 보기
-        //-     .music-grid
-        //-         each music in musics
-        //-             +music(music)
-        //-         else
-        //-             span.empty__message 음악을 찾을 수 없습니다.
+        .musicThatUserTime.recommendWrap
+            .musicRecommendControl
+                span#timeTitle.musicRecommendTitle 저녁 드라이브
+                button#timeMoreBtn 더 보기
+            .music-grid
+                //- each music in musics
+                //-     +music(music)
+                //- else
+                //-     span.empty__message 음악을 찾을 수 없습니다.
+
+        span= hour
+        span= month
+        span.weather
 
         //- 예정 (최근에 추천된)
 
