@@ -141,7 +141,109 @@ export const listen = async (req, res) => {
             vList.push(allMusic[randomIndex]);
         }
     } else if (weather) {
-        // 이 파일 맨 밑에거 로직 잘 생각해서 붙여 넣어
+        vList.push(music);
+        const rainy = ["Drizzle", "Rain"];
+        const foggy = [
+            "Mist",
+            "Smoke",
+            "Haze",
+            "Dust",
+            "Fog",
+            "Sand",
+            "Dust",
+            "Ash",
+            "Squall",
+            "Tornado",
+        ];
+        const getMusicsAndReturn = (musicFound) => {
+            const randomWeatherMusicList = [];
+            let weatherLimit = 0;
+            if (vList.length < musicFound.length) {
+                if (musicFound.length - vList.length < 7) {
+                    weatherLimit = musicFound.length - vList.length;
+                } else {
+                    weatherLimit = 7;
+                }
+            }
+            while (randomWeatherMusicList.length < weatherLimit) {
+                const randomIndex = Math.floor(
+                    Math.random() * musicFound.length
+                );
+                if (
+                    randomWeatherMusicList.includes(musicFound[randomIndex]) ||
+                    vList[0]._id.toString() ===
+                        musicFound[randomIndex]._id.toString()
+                ) {
+                    continue;
+                }
+                randomWeatherMusicList.push(musicFound[randomIndex]);
+            }
+            return { functionList: randomWeatherMusicList };
+        };
+        if (
+            rainy.includes(weather) ||
+            foggy.includes(weather) ||
+            weather === "Clouds"
+        ) {
+            const musics = await Music.find({
+                genre: {
+                    $in: [
+                        "발라드",
+                        "포크/어쿠스틱",
+                        "알앤비/소울",
+                        "재즈",
+                        "인디",
+                        "클래식",
+                        "뉴에이지",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(musics);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (weather === "Thunderstorm") {
+            const musics = await Music.find({
+                genre: {
+                    $in: ["댄스/팝", "랩/힙합", "일렉트로닉", "락/메탈"],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(musics);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (weather === "Clear") {
+            const musics = await Music.find({
+                genre: {
+                    $in: [
+                        "발라드",
+                        "댄스/팝",
+                        "포크/어쿠스틱",
+                        "랩/힙합",
+                        "알앤비/소울",
+                        "재즈",
+                        "일렉트로닉",
+                        "락/메탈",
+                        "인디",
+                        "J-POP",
+                        "클래식",
+                        "뉴에이지",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(musics);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (weather === "Snow") {
+            const musics = await Music.find({
+                genre: "캐롤",
+            });
+            const { functionList } = getMusicsAndReturn(musics);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        }
     } else if (time) {
     } else {
         // 랜덤 트랙 리스트 구현 코드
@@ -480,29 +582,132 @@ export const postListenCount = async (req, res) => {
 
 export const getMoreRandomMusic = async (req, res) => {
     const {
-        body: { list },
+        body: { list, param, loggedInUserId },
     } = req;
-    const allMusic = await Music.find();
-    const randomMusicList = [];
-    let randomLimit = 0;
-    if (list.length < allMusic.length) {
-        if (allMusic.length - list.length < 7) {
-            randomLimit = allMusic.length - list.length;
-        } else {
-            randomLimit = 7;
+    let user;
+    let allMusic;
+    if (param) {
+        if (param[0] === "re") {
+            user = await User.findById(loggedInUserId).populate(
+                "musicListened.musicListenedId"
+            );
+        } else if (param[0] === "weather") {
+            const weather = param[1];
+            const rainy = ["Drizzle", "Rain"];
+            const foggy = [
+                "Mist",
+                "Smoke",
+                "Haze",
+                "Dust",
+                "Fog",
+                "Sand",
+                "Dust",
+                "Ash",
+                "Squall",
+                "Tornado",
+            ];
+            if (
+                rainy.includes(weather) ||
+                foggy.includes(weather) ||
+                weather === "Clouds"
+            ) {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "발라드",
+                            "포크/어쿠스틱",
+                            "알앤비/소울",
+                            "재즈",
+                            "인디",
+                            "클래식",
+                            "뉴에이지",
+                        ],
+                    },
+                });
+            } else if (weather === "Thunderstorm") {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: ["댄스/팝", "랩/힙합", "일렉트로닉", "락/메탈"],
+                    },
+                });
+            } else if (weather === "Clear") {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "발라드",
+                            "댄스/팝",
+                            "포크/어쿠스틱",
+                            "랩/힙합",
+                            "알앤비/소울",
+                            "재즈",
+                            "일렉트로닉",
+                            "락/메탈",
+                            "인디",
+                            "J-POP",
+                            "클래식",
+                            "뉴에이지",
+                        ],
+                    },
+                });
+            } else if (weather === "Snow") {
+                allMusic = await Music.find({
+                    genre: "캐롤",
+                });
+            }
+        } else if (param[0] === "time") {
+            console.log("시간");
         }
     } else {
-        return res.sendStatus(304);
+        allMusic = await Music.find();
     }
-    while (randomMusicList.length < randomLimit) {
-        const randomIndex = Math.floor(Math.random() * allMusic.length);
-        if (
-            randomMusicList.includes(allMusic[randomIndex]) ||
-            list.includes(allMusic[randomIndex]._id.toString())
-        ) {
-            continue;
+    const randomMusicList = [];
+    let randomLimit = 0;
+    if (user) {
+        if (list.length < user.musicListened.length) {
+            if (user.musicListened.length - list.length < 7) {
+                randomLimit = user.musicListened.length - list.length;
+            } else {
+                randomLimit = 7;
+            }
+        } else {
+            return res.sendStatus(304);
         }
-        randomMusicList.push(allMusic[randomIndex]);
+        while (randomMusicList.length < randomLimit) {
+            const randomIndex = Math.floor(
+                Math.random() * user.musicListened.length
+            );
+            if (
+                randomMusicList.includes(
+                    user.musicListened[randomIndex].musicListenedId
+                ) ||
+                list.includes(
+                    user.musicListened[randomIndex].musicListenedId.toString()
+                )
+            ) {
+                continue;
+            }
+            randomMusicList.push(user.musicListened[randomIndex]._id);
+        }
+    } else {
+        if (list.length < allMusic.length) {
+            if (allMusic.length - list.length < 7) {
+                randomLimit = allMusic.length - list.length;
+            } else {
+                randomLimit = 7;
+            }
+        } else {
+            return res.sendStatus(304);
+        }
+        while (randomMusicList.length < randomLimit) {
+            const randomIndex = Math.floor(Math.random() * allMusic.length);
+            if (
+                randomMusicList.includes(allMusic[randomIndex]) ||
+                list.includes(allMusic[randomIndex]._id.toString())
+            ) {
+                continue;
+            }
+            randomMusicList.push(allMusic[randomIndex]);
+        }
     }
     const isAll = randomLimit < 7 ? true : false;
     return res
@@ -720,6 +925,125 @@ export const getMusicsByWeather = async (req, res) => {
             randomWeatherMusicList: functionList,
             isAll: functionAll,
             weatherTitleValue: weatherTitleValue,
+        });
+    }
+};
+
+export const getMoreWeatherMusics = async (req, res) => {
+    const {
+        body: { list, weather },
+    } = req;
+    const rainy = ["Drizzle", "Rain"];
+    const foggy = [
+        "Mist",
+        "Smoke",
+        "Haze",
+        "Dust",
+        "Fog",
+        "Sand",
+        "Dust",
+        "Ash",
+        "Squall",
+        "Tornado",
+    ];
+    const getMusicsAndReturn = (musicFound) => {
+        const randomWeatherMusicList = [];
+        let weatherLimit = 0;
+        if (list.length < musicFound.length) {
+            if (musicFound.length - list.length < 7) {
+                weatherLimit = musicFound.length - list.length;
+            } else {
+                weatherLimit = 7;
+            }
+        } else {
+            return res.sendStatus(304);
+        }
+        while (randomWeatherMusicList.length < weatherLimit) {
+            const randomIndex = Math.floor(Math.random() * musicFound.length);
+            if (
+                randomWeatherMusicList.includes(musicFound[randomIndex]) ||
+                list.includes(musicFound[randomIndex]._id.toString())
+            ) {
+                continue;
+            }
+            randomWeatherMusicList.push(musicFound[randomIndex]);
+        }
+        const isAll = weatherLimit < 7 ? true : false;
+        return { functionList: randomWeatherMusicList, functionAll: isAll };
+    };
+    if (
+        rainy.includes(weather) ||
+        foggy.includes(weather) ||
+        weather === "Clouds"
+    ) {
+        const musics = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "포크/어쿠스틱",
+                    "알앤비/소울",
+                    "재즈",
+                    "인디",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+        });
+    } else if (weather === "Thunderstorm") {
+        const musics = await Music.find({
+            genre: {
+                $in: ["댄스/팝", "랩/힙합", "일렉트로닉", "락/메탈"],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+        });
+    } else if (weather === "Clear") {
+        const musics = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "포크/어쿠스틱",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "재즈",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "J-POP",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+        });
+    } else if (weather === "Snow") {
+        const musics = await Music.find({
+            genre: "캐롤",
+        });
+        const { functionList, functionAll } = getMusicsAndReturn(musics);
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
+        });
+    } else {
+        const functionList = [];
+        const functionAll = true;
+        return res.status(200).json({
+            randomWeatherMusicList: functionList,
+            isAll: functionAll,
         });
     }
 };

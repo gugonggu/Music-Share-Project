@@ -181,6 +181,26 @@ const failGetLocation = () => {
 };
 navigator.geolocation.getCurrentPosition(successGetLocation, failGetLocation);
 
-weatherMoreBtn.addEventListener("click", () => {
-    console.log(lat, lon, weatherApiUrl);
+weatherMoreBtn.addEventListener("click", async () => {
+    const list = [];
+    const allWeatherMusics = document.querySelectorAll(".weatherMixin");
+    allWeatherMusics.forEach((v) => {
+        list.push(v.dataset.musicid);
+    });
+    const response = await fetch("/api/musics/get-more-weather-musics", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ list: list, weather: weather }),
+    });
+    if (response.status === 200) {
+        const { randomWeatherMusicList, isAll } = await response.json();
+        if (isAll) {
+            weatherMoreBtn.classList.add("cantmore");
+        }
+        printWeathermMusicList(randomWeatherMusicList, weather);
+        weatherMusics = document.querySelectorAll(".weatherMixin");
+        reAddAnimation(weatherMusics);
+    }
 });

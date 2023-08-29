@@ -10,6 +10,7 @@ import {
     getMoreSameGenreMusic,
     getMoreListenedMusic,
     getMusicsByWeather,
+    getMoreWeatherMusics,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
@@ -50,6 +51,11 @@ apiRouter.patch(
     "/musics/:id([0-9a-f]{24})/get-more-samegenremusic",
     protectorMiddleware,
     getMoreSameGenreMusic
+);
+apiRouter.patch(
+    "/musics/get-more-weather-musics",
+    protectorMiddleware,
+    getMoreWeatherMusics
 );
 
 apiRouter.post(

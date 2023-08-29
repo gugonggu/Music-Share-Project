@@ -681,13 +681,24 @@ verticalMore.addEventListener("click", async () => {
     musics.forEach((v) => {
         list.push(v.dataset.musicid);
     });
+    const params = new URLSearchParams(location.search);
+    let param;
+    for (let i of params) {
+        param = i;
+    }
+
     if (musicRandom.classList.contains("listSelected")) {
         const response = await fetch("/api/musics/get-more-randommusic", {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ list: list }),
+            body: JSON.stringify({
+                list: list,
+                param,
+                param,
+                loggedInUserId: loggedInUserId,
+            }),
         });
         if (response.status === 200) {
             const { randomMusicList, isAll } = await response.json();
