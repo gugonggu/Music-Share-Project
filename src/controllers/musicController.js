@@ -129,16 +129,24 @@ export const listen = async (req, res) => {
     );
     if (re) {
         vList.push(music);
-        const limit = user.musicListened.length < 8 ? user.musicListened : 8;
+        const limit =
+            user.musicListened.length < 8 ? user.musicListened.length : 8;
         while (vList.length < limit) {
-            const randomIndex = Math.floor(Math.random() * allMusic.length);
-            if (music._id.toString() === allMusic[randomIndex]._id.toString()) {
+            const randomIndex = Math.floor(
+                Math.random() * user.musicListened.length
+            );
+            if (
+                music._id.toString() ===
+                user.musicListened[randomIndex]._id.toString()
+            ) {
                 continue;
             }
-            if (vList.includes(allMusic[randomIndex])) {
+            if (
+                vList.includes(user.musicListened[randomIndex].musicListenedId)
+            ) {
                 continue;
             }
-            vList.push(allMusic[randomIndex]);
+            vList.push(user.musicListened[randomIndex].musicListenedId);
         }
     } else if (weather) {
         vList.push(music);
@@ -286,6 +294,7 @@ export const listen = async (req, res) => {
         music: music,
         vList: vList,
         isLiked: isLiked,
+        re: re,
     });
 };
 
