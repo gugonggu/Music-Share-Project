@@ -1,0 +1,10 @@
+mixin timeMusic(music)
+    a.music-mixin.timeMixin(
+        href=`/music/${music._id}?time=${hour}`,
+        data-musicid=music._id
+    )
+        .music-img-cutter
+            img(src=music.musicInfo.musicThumbnailSrc, alt="")
+        .music-mixin__data
+            span.music-mixin__title #{ music.title }
+            span.music-mixin__artist #{ music.artist }

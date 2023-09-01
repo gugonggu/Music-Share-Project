@@ -196,7 +196,6 @@ musics.forEach((v) => {
         curMusic = musicsList.indexOf(v);
     });
 });
-
 const formatTime = (sec) => {
     const startIdx = sec >= 3600 ? 11 : 14;
     return new Date(sec * 1000).toISOString().substring(startIdx, 19);
@@ -556,7 +555,12 @@ const printMusicList = (arr) => {
         musicList.innerHTML += template;
     });
     musics = document.querySelectorAll(".music__vertical");
-    musics[0].classList.add("nowPlaying");
+    if (isGenreList) {
+        musics[randomIndex].classList.add("nowPlaying");
+    } else {
+        musics[0].classList.add("nowPlaying");
+    }
+
     list = [];
     musics.forEach((v) => {
         list.push(v);
@@ -568,14 +572,22 @@ const printMusicList = (arr) => {
     });
 };
 
+let randomIndex = 0;
+let isGenreList = true;
+let beforeList = [];
+
 musicRandom.addEventListener("click", async () => {
     if (musicRandom.classList.contains("listSelected")) {
         return;
     } else {
-        curMusic = 0;
+        isGenreList = true;
+        curMusic = randomIndex;
         musicRandom.classList.add("listSelected");
         musicSameGenre.classList.remove("listSelected");
         printMusicList(randomList);
+        changeCurMusicInfo(beforeList[curMusic]);
+        musics[curMusic].classList.add("nowPlaying");
+        beforeList = [];
         if (randomList.length < 8 || randomAll) {
             verticalMore.classList.add("cantmore");
         } else {
@@ -588,6 +600,12 @@ musicSameGenre.addEventListener("click", async () => {
     if (musicSameGenre.classList.contains("listSelected")) {
         return;
     } else {
+        const prevRandomList = document.querySelectorAll(".music__vertical");
+        prevRandomList.forEach((v) => {
+            beforeList.push(v);
+        });
+        isGenreList = false;
+        randomIndex = curMusic;
         curMusic = 0;
         musicSameGenre.classList.add("listSelected");
         musicRandom.classList.remove("listSelected");
@@ -695,7 +713,6 @@ verticalMore.addEventListener("click", async () => {
             },
             body: JSON.stringify({
                 list: list,
-                param,
                 param,
                 loggedInUserId: loggedInUserId,
             }),

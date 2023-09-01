@@ -1,6 +1,7 @@
 extends base.pug
 include mixins/music
 include mixins/userListenedMusic
+include mixins/timeMusic
 
 block section
     .homeWrap
@@ -40,13 +41,16 @@ block section
 
         .musicThatUserTime.recommendWrap
             .musicRecommendControl
-                span#timeTitle.musicRecommendTitle 저녁 드라이브
-                button#timeMoreBtn 더 보기
-            .music-grid
-                //- each music in musics
-                //-     +music(music)
-                //- else
-                //-     span.empty__message 음악을 찾을 수 없습니다.
+                span#timeTitle.musicRecommendTitle= timeTitle
+                if timeList.length < 7
+                    button#timeMoreBtn.cantmore 더 보기
+                else
+                    button#timeMoreBtn 더 보기
+            #timeGrid.music-grid
+                each music in timeList
+                    +timeMusic(music)
+                else
+                    span.empty__message 음악을 찾을 수 없습니다.
 
         span= hour
         span= month

@@ -29,7 +29,7 @@ export const home = async (req, res) => {
     // 유저가 들었던 음악
     const userListenedMusics = [];
     const listenedLimit =
-        user.musicListened.length < 7 ? user.musicListened.length : 7;
+        user.musicListened.length < 9 ? user.musicListened.length : 9;
     while (userListenedMusics.length < listenedLimit) {
         const randomIndex = Math.floor(
             Math.random() * user.musicListened.length
@@ -39,13 +39,105 @@ export const home = async (req, res) => {
         }
         userListenedMusics.push(user.musicListened[randomIndex]);
     }
-    const cantMoreListened = listenedLimit < 7 ? true : false;
+    const cantMoreListened = listenedLimit < 9 ? true : false;
 
     // 날씨 불러오기
+    // 프론트 js에서 처리
 
     // 시간 불러오기
     const now = new Date();
     const hour = now.getHours();
+    let timeList = [];
+    let timeTitle;
+    const setLimitAndPushReturn = (musicFound) => {
+        const timeLimit = musicFound.length < 7 ? musicFound.length : 7;
+        while (timeList.length < timeLimit) {
+            const randomIndex = Math.floor(Math.random() * musicFound.length);
+            if (timeList.includes(musicFound[randomIndex])) {
+                continue;
+            }
+            timeList.push(musicFound[randomIndex]);
+        }
+    };
+
+    if (1 <= hour && hour < 6) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: ["발라드", "포크/어쿠스틱", "알앤비/소울", "재즈"],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+        timeTitle = "새벽 갬성";
+    } else if (6 <= hour && hour < 10) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "댄스/팝",
+                    "랩/힙합",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+        timeTitle = "개운한 아침";
+    } else if (10 <= hour && hour < 16) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "포크/어쿠스틱",
+                    "알앤비/소울",
+                    "재즈",
+                    "인디",
+                    "J-POP",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+        timeTitle = "나른한 오후";
+    } else if (16 <= hour && hour < 21) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "재즈",
+                    "인디",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+        timeTitle = "언제나 좋은 퇴근길";
+    } else {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "포크/어쿠스틱",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "재즈",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+        timeTitle = "드라이브하고 싶은 밤";
+    }
 
     // 계절 (월) 불러오기
     const month = now.getMonth() + 1;
@@ -56,6 +148,8 @@ export const home = async (req, res) => {
         cantMoreRandom,
         userListenedMusics,
         cantMoreListened,
+        timeList,
+        timeTitle,
         hour,
         month,
     });
@@ -137,7 +231,7 @@ export const listen = async (req, res) => {
             );
             if (
                 music._id.toString() ===
-                user.musicListened[randomIndex]._id.toString()
+                user.musicListened[randomIndex].musicListenedId._id.toString()
             ) {
                 continue;
             }
@@ -253,6 +347,120 @@ export const listen = async (req, res) => {
             }
         }
     } else if (time) {
+        vList.push(music);
+        const getMusicsAndReturn = (musicFound) => {
+            const randomTimeMusicList = [];
+            let timeLimit = 0;
+            if (vList.length < musicFound.length) {
+                if (musicFound.length - vList.length < 7) {
+                    timeLimit = musicFound.length - vList.length;
+                } else {
+                    timeLimit = 7;
+                }
+            }
+            while (randomTimeMusicList.length < timeLimit) {
+                const randomIndex = Math.floor(
+                    Math.random() * musicFound.length
+                );
+                if (
+                    randomTimeMusicList.includes(musicFound[randomIndex]) ||
+                    vList[0]._id.toString() ===
+                        musicFound[randomIndex]._id.toString()
+                ) {
+                    continue;
+                }
+                randomTimeMusicList.push(musicFound[randomIndex]);
+            }
+            return { functionList: randomTimeMusicList };
+        };
+        if (1 <= time && time < 6) {
+            const allTimeMusic = await Music.find({
+                genre: {
+                    $in: ["발라드", "포크/어쿠스틱", "알앤비/소울", "재즈"],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(allTimeMusic);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (6 <= time && time < 10) {
+            const allTimeMusic = await Music.find({
+                genre: {
+                    $in: [
+                        "댄스/팝",
+                        "랩/힙합",
+                        "일렉트로닉",
+                        "락/메탈",
+                        "인디",
+                        "J-POP",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(allTimeMusic);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (10 <= time && time < 16) {
+            const allTimeMusic = await Music.find({
+                genre: {
+                    $in: [
+                        "발라드",
+                        "포크/어쿠스틱",
+                        "알앤비/소울",
+                        "재즈",
+                        "인디",
+                        "J-POP",
+                        "클래식",
+                        "뉴에이지",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(allTimeMusic);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else if (16 <= time && time < 21) {
+            const allTimeMusic = await Music.find({
+                genre: {
+                    $in: [
+                        "발라드",
+                        "댄스/팝",
+                        "랩/힙합",
+                        "알앤비/소울",
+                        "일렉트로닉",
+                        "락/메탈",
+                        "재즈",
+                        "인디",
+                        "J-POP",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(allTimeMusic);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        } else {
+            const allTimeMusic = await Music.find({
+                genre: {
+                    $in: [
+                        "발라드",
+                        "댄스/팝",
+                        "포크/어쿠스틱",
+                        "랩/힙합",
+                        "알앤비/소울",
+                        "일렉트로닉",
+                        "락/메탈",
+                        "인디",
+                        "재즈",
+                        "J-POP",
+                    ],
+                },
+            });
+            const { functionList } = getMusicsAndReturn(allTimeMusic);
+            for (let i in functionList) {
+                vList.push(functionList[i]);
+            }
+        }
     } else {
         // 랜덤 트랙 리스트 구현 코드
         const allMusic = await Music.find().populate("recommender", "username");
@@ -664,7 +872,75 @@ export const getMoreRandomMusic = async (req, res) => {
                 });
             }
         } else if (param[0] === "time") {
-            console.log("시간");
+            const hour = param[1];
+            if (1 <= hour && hour < 6) {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: ["발라드", "포크/어쿠스틱", "알앤비/소울", "재즈"],
+                    },
+                });
+            } else if (6 <= hour && hour < 10) {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "댄스/팝",
+                            "랩/힙합",
+                            "일렉트로닉",
+                            "락/메탈",
+                            "인디",
+                            "J-POP",
+                        ],
+                    },
+                });
+            } else if (10 <= hour && hour < 16) {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "발라드",
+                            "포크/어쿠스틱",
+                            "알앤비/소울",
+                            "재즈",
+                            "인디",
+                            "J-POP",
+                            "클래식",
+                            "뉴에이지",
+                        ],
+                    },
+                });
+            } else if (16 <= hour && hour < 21) {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "발라드",
+                            "댄스/팝",
+                            "랩/힙합",
+                            "알앤비/소울",
+                            "일렉트로닉",
+                            "락/메탈",
+                            "재즈",
+                            "인디",
+                            "J-POP",
+                        ],
+                    },
+                });
+            } else {
+                allMusic = await Music.find({
+                    genre: {
+                        $in: [
+                            "발라드",
+                            "댄스/팝",
+                            "포크/어쿠스틱",
+                            "랩/힙합",
+                            "알앤비/소울",
+                            "일렉트로닉",
+                            "락/메탈",
+                            "인디",
+                            "재즈",
+                            "J-POP",
+                        ],
+                    },
+                });
+            }
         }
     } else {
         allMusic = await Music.find();
@@ -695,7 +971,9 @@ export const getMoreRandomMusic = async (req, res) => {
             ) {
                 continue;
             }
-            randomMusicList.push(user.musicListened[randomIndex]._id);
+            randomMusicList.push(
+                user.musicListened[randomIndex].musicListenedId
+            );
         }
     } else {
         if (list.length < allMusic.length) {
@@ -780,10 +1058,10 @@ export const getMoreListenedMusic = async (req, res) => {
     const listenedList = [];
     let listenedLimit = 0;
     if (list.length < user.musicListened.length) {
-        if (user.musicListened.length - list.length < 7) {
+        if (user.musicListened.length - list.length < 9) {
             listenedLimit = user.musicListened.length - list.length;
         } else {
-            listenedLimit = 7;
+            listenedLimit = 9;
         }
     } else {
         return res.sendStatus(304);
@@ -804,7 +1082,7 @@ export const getMoreListenedMusic = async (req, res) => {
         }
         listenedList.push(user.musicListened[randomIndex].musicListenedId);
     }
-    const isAll = listenedLimit < 7 ? true : false;
+    const isAll = listenedLimit < 9 ? true : false;
     return res.status(200).json({ listenedList: listenedList, isAll: isAll });
 };
 
@@ -1055,4 +1333,111 @@ export const getMoreWeatherMusics = async (req, res) => {
             isAll: functionAll,
         });
     }
+};
+
+export const getMoreTimeMusics = async (req, res) => {
+    const {
+        body: { curTimeList },
+    } = req;
+    const now = new Date();
+    const hour = now.getHours();
+    let timeList = [];
+    let timeLimit = 0;
+    const setLimitAndPushReturn = (musicFound) => {
+        if (curTimeList.length < musicFound.length) {
+            if (musicFound.length - curTimeList.length < 7) {
+                timeLimit = musicFound.length - curTimeList.length;
+            } else {
+                timeLimit = 7;
+            }
+        } else {
+            return res.sendStatus(304);
+        }
+        while (timeList.length < timeLimit) {
+            const randomIndex = Math.floor(Math.random() * musicFound.length);
+            if (
+                timeList.includes(musicFound[randomIndex]) ||
+                curTimeList.includes(musicFound[randomIndex]._id.toString())
+            ) {
+                continue;
+            }
+            timeList.push(musicFound[randomIndex]);
+        }
+    };
+
+    if (1 <= hour && hour < 6) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: ["발라드", "포크/어쿠스틱", "알앤비/소울", "재즈"],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+    } else if (6 <= hour && hour < 10) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "댄스/팝",
+                    "랩/힙합",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+    } else if (10 <= hour && hour < 16) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "포크/어쿠스틱",
+                    "알앤비/소울",
+                    "재즈",
+                    "인디",
+                    "J-POP",
+                    "클래식",
+                    "뉴에이지",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+    } else if (16 <= hour && hour < 21) {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "재즈",
+                    "인디",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+    } else {
+        const allTimeMusic = await Music.find({
+            genre: {
+                $in: [
+                    "발라드",
+                    "댄스/팝",
+                    "포크/어쿠스틱",
+                    "랩/힙합",
+                    "알앤비/소울",
+                    "일렉트로닉",
+                    "락/메탈",
+                    "인디",
+                    "재즈",
+                    "J-POP",
+                ],
+            },
+        });
+        setLimitAndPushReturn(allTimeMusic);
+    }
+    const timeIsAll = timeLimit < 7 ? true : false;
+    return res.status(200).json({ timeList: timeList, timeIsAll: timeIsAll });
 };

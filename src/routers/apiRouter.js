@@ -11,6 +11,7 @@ import {
     getMoreListenedMusic,
     getMusicsByWeather,
     getMoreWeatherMusics,
+    getMoreTimeMusics,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
 import { protectorMiddleware } from "../middlewares";
@@ -56,6 +57,11 @@ apiRouter.patch(
     "/musics/get-more-weather-musics",
     protectorMiddleware,
     getMoreWeatherMusics
+);
+apiRouter.patch(
+    "/musics/get-more-time-musics",
+    protectorMiddleware,
+    getMoreTimeMusics
 );
 
 apiRouter.post(

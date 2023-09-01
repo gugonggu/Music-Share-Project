@@ -204,3 +204,50 @@ weatherMoreBtn.addEventListener("click", async () => {
         reAddAnimation(weatherMusics);
     }
 });
+
+// 시간
+const timeMoreBtn = document.getElementById("timeMoreBtn");
+const timeGrid = document.getElementById("timeGrid");
+
+const printTimeMusicList = (arr, timeData) => {
+    arr.forEach((v) => {
+        const template = `
+        <a class="music-mixin timeMixin" href="/music/${v._id}?time=${timeData}" data-musicid=${v._id}>
+            <div class="music-img-cutter">
+                <img src=${v.musicInfo.musicThumbnailSrc} alt="">
+            </div>
+            <div class="music-mixin__data">
+                <span class="music-mixin__title">${v.title}</span>
+                <span class="music-mixin__artist">${v.artist}</span>
+            </div>
+        </a>
+        `;
+        timeGrid.innerHTML += template;
+    });
+};
+
+timeMoreBtn.addEventListener("click", async () => {
+    const curTimeList = [];
+    const allTimeMusic = document.querySelectorAll(".timeMixin");
+    allTimeMusic.forEach((v) => {
+        curTimeList.push(v.dataset.musicid);
+    });
+    const response = await fetch("/api/musics/get-more-time-musics", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ curTimeList: curTimeList }),
+    });
+    if (response.status === 200) {
+        const { timeList, timeIsAll } = await response.json();
+        if (timeIsAll) {
+            timeMoreBtn.classList.add("cantmore");
+        }
+        const now = new Date();
+        const hour = now.getHours();
+        printTimeMusicList(timeList, hour);
+        const timeMusics = document.querySelectorAll(".timeMixin");
+        reAddAnimation(timeMusics);
+    }
+});

@@ -47,3 +47,20 @@
         }
     }
 }
+
+#listenedGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    height: 210px;
+    .music-mixin {
+        display: flex;
+        .music-img-cutter {
+            width: 55px;
+            height: 55px;
+            margin-right: 10px;
+        }
+        .music-mixin__data {
+            margin-top: 0;
+        }
+    }
+}
