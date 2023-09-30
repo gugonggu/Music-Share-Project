@@ -10,7 +10,9 @@ export const home = async (req, res) => {
         "musicListened.musicListenedId"
     );
     if (!user) {
-        return res.render("404", { pageTitle: "유저를 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "유저를 찾을 수 없습니다.",
+        });
     }
 
     // 랜덤 음악
@@ -40,9 +42,6 @@ export const home = async (req, res) => {
         userListenedMusics.push(user.musicListened[randomIndex]);
     }
     const cantMoreListened = listenedLimit < 9 ? true : false;
-
-    // 날씨 불러오기
-    // 프론트 js에서 처리
 
     // 시간 불러오기
     const now = new Date();
@@ -117,7 +116,7 @@ export const home = async (req, res) => {
             },
         });
         setLimitAndPushReturn(allTimeMusic);
-        timeTitle = "언제나 좋은 퇴근길";
+        timeTitle = "언제나 기분 좋은 퇴근길";
     } else {
         const allTimeMusic = await Music.find({
             genre: {
@@ -156,7 +155,7 @@ export const home = async (req, res) => {
 };
 
 export const getUpload = (req, res) => {
-    return res.render("musics/upload", { pageTitle: "Upload Video" });
+    return res.render("musics/upload", { pageTitle: "음악 추천" });
 };
 
 export const postUpload = async (req, res) => {
@@ -199,7 +198,7 @@ export const postUpload = async (req, res) => {
         return res.redirect("/");
     } catch (error) {
         return res.status(400).render("musics/upload", {
-            pageTitle: "Upload Music",
+            pageTitle: "음악 추천",
             errorMessage: error._message,
         });
     }
@@ -215,7 +214,9 @@ export const listen = async (req, res) => {
     const { time } = req.query;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
-        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "음악을 찾을 수 없습니다.",
+        });
     }
     let vList = [];
     const user = await User.findById(_id).populate(
@@ -513,13 +514,15 @@ export const getEdit = async (req, res) => {
     } = req.session;
     const music = await Music.findById(id);
     if (!music) {
-        return res.status(400).render("404", { pageTitle: "Music not found." });
+        return res
+            .status(400)
+            .render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
     if (String(music.recommender) !== String(_id)) {
         return res.status(403).redirect("/");
     }
     return res.render("musics/edit", {
-        pageTitle: `Edit: ${music.title}`,
+        pageTitle: `${music.title} 수정`,
         music,
     });
 };
@@ -529,7 +532,9 @@ export const postEdit = async (req, res) => {
     const { title, artist, musicUrl, genre } = req.body;
     const music = await Music.exists({ _id: id });
     if (!music) {
-        return res.status(404).render("404", { pageTitle: "Music not found." });
+        return res
+            .status(404)
+            .render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
 
     const youtubeVideoId = Music.getYoutubeVideoId(musicUrl);
@@ -545,7 +550,7 @@ export const postEdit = async (req, res) => {
         },
         genre: genre,
     });
-    req.flash("success", "Changes saved.");
+    req.flash("success", "변경사항이 저장되었습니다.");
     return res.redirect(`/music/${id}`);
 };
 
@@ -556,10 +561,12 @@ export const deleteMusic = async (req, res) => {
     } = req.session;
     const music = await Music.findById(id);
     if (!music) {
-        return res.status(404).render("404", { pageTitle: "Music not found." });
+        return res
+            .status(404)
+            .render("404", { pageTitle: "음악을 찾을 수 없습니다." });
     }
     if (String(music.recommender) !== String(_id)) {
-        req.flash("error", "You are not the owner of the music.");
+        req.flash("error", "해당 음악의 추천인이 아닙니다.");
         return res.status(403).redirect("/");
     }
     const user = await User.findById(music.recommender);
@@ -600,24 +607,12 @@ export const search = async (req, res) => {
     }
     if (genreKeyword) {
         musics = await Music.find({
-            artist: {
+            genre: {
                 $regex: new RegExp(genreKeyword, "i"),
             },
         }).populate("recommender");
     }
     return res.render("search", { pageTitle: "Search", musics });
-};
-
-export const getOthersPlaylist = async (req, res) => {
-    const users = await User.find().populate("musics");
-    return res.render("musics/others-playlist", {
-        pageTitle: "Other's Playlist",
-        users,
-    });
-};
-
-export const postOthersPlaylist = async (req, res) => {
-    return res.end();
 };
 
 export const musicDislike = async (req, res) => {
@@ -694,7 +689,9 @@ export const randomMusic = async (req, res) => {
     } = req;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
-        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "음악을 찾을 수 없습니다.",
+        });
     }
     const allMusic = await Music.find().populate("recommender", "username");
     const limit = list.length;
@@ -720,7 +717,9 @@ export const sameGenreMusic = async (req, res) => {
     } = req;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
-        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "음악을 찾을 수 없습니다.",
+        });
     }
     const allSameGenreList = await Music.find({ genre: music.genre }).populate(
         "recommender",
@@ -1009,7 +1008,9 @@ export const getMoreSameGenreMusic = async (req, res) => {
     } = req;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
-        return res.render("404", { pageTitle: "음악을 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "음악을 찾을 수 없습니다.",
+        });
     }
     const allSameGenreList = await Music.find({ genre: music.genre }).populate(
         "recommender",
@@ -1053,7 +1054,9 @@ export const getMoreListenedMusic = async (req, res) => {
         "musicListened.musicListenedId"
     );
     if (!user) {
-        return res.render("404", { pageTitle: "유저를 찾을 수 없습니다." });
+        return res.render("404", {
+            pageTitle: "유저를 찾을 수 없습니다.",
+        });
     }
     const listenedList = [];
     let listenedLimit = 0;

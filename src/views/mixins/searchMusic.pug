@@ -1,0 +1,8 @@
+mixin searchMusic(music)
+    a.music__search(href=`/music/${music._id}`)
+        .music__search-img-wrap
+            img(src=music.musicInfo.musicThumbnailSrc, alt="")
+        .music__search-mixin-data
+            p.music__search-mixin-title= music.title
+            .music__search-mixin-artist-wrap
+                span.music__search-mixin-artist= music.artist

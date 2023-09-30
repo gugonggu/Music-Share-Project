@@ -1,16 +1,13 @@
 import User from "../models/User";
-import Music from "../models/Music";
-import fetch from "node-fetch";
 import bcrypt from "bcrypt";
-import { async } from "regenerator-runtime";
 
 export const getJoin = (req, res) => {
-    res.render("join", { pageTitle: "Join" });
+    res.render("join", { pageTitle: "가입" });
 };
 
 export const postJoin = async (req, res) => {
     const { name, username, email, password, confirmPassword } = req.body;
-    const pageTitle = "Join";
+    const pageTitle = "가입";
     if (password !== confirmPassword) {
         return res.status(400).render("join", {
             pageTitle,
@@ -35,19 +32,20 @@ export const postJoin = async (req, res) => {
         });
         return res.redirect("/login");
     } catch (error) {
-        return res
-            .status(400)
-            .render("join", { pageTitle, errorMessage: error._message });
+        return res.status(400).render("join", {
+            pageTitle,
+            errorMessage: error._message,
+        });
     }
 };
 
 export const getLogin = (req, res) => {
-    return res.render("login", { pageTitle: "Login" });
+    return res.render("login", { pageTitle: "로그인" });
 };
 
 export const postLogin = async (req, res) => {
     const { email, password } = req.body;
-    const pageTitle = "Login";
+    const pageTitle = "로그인";
     const user = await User.findOne({ email });
     if (!user) {
         return res.status(400).render("login", {
@@ -74,7 +72,9 @@ export const logout = (req, res) => {
 };
 
 export const getEdit = (req, res) => {
-    return res.render("users/edit-profile", { pageTitle: "Edit profile" });
+    return res.render("users/edit-profile", {
+        pageTitle: "프로필 수정",
+    });
 };
 
 export const postEdit = async (req, res) => {
@@ -95,7 +95,7 @@ export const postEdit = async (req, res) => {
         const foundUser = await User.findOne({ $or: searchParam });
         if (foundUser && foundUser._id.toString() !== _id) {
             return res.status(400).render("users/edit-profile", {
-                pageTitle: "Edit Profile",
+                pageTitle: "프로필 수정",
                 errorMessage: "이미 존재하는 닉네임/이메일 입니다.",
             });
         }
@@ -115,7 +115,7 @@ export const postEdit = async (req, res) => {
 
 export const getChangePassword = async (req, res) => {
     return res.render("users/change-password", {
-        pageTitle: "Change Password",
+        pageTitle: "비밀번호 변경",
     });
 };
 
@@ -130,19 +130,19 @@ export const postChangePassword = async (req, res) => {
     const ok = await bcrypt.compare(oldPassword, user.password);
     if (!ok) {
         return res.status(400).render("users/change-password", {
-            pageTitle: "Change Password",
+            pageTitle: "비밀변호 변경",
             errorMessage: "현재 비밀번호가 맞지 않습니다.",
         });
     }
     if (newPassword !== newPasswordConfirmation) {
         return res.status(400).render("users/change-password", {
-            pageTitle: "Change Password",
+            pageTitle: "비밀번호 변경",
             errorMessage: "비밀번호가 맞지 않습니다.",
         });
     }
     user.password = newPassword;
     await user.save();
-    req.flash("info", "Password updated");
+    req.flash("info", "비밀번호가 성공적으로 변경되었습니다.");
     return res.redirect("/logout");
 };
 
@@ -150,7 +150,7 @@ export const myMusics = async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id).populate("musics");
     return res.render("users/my-musics", {
-        pageTitle: "My Musics",
+        pageTitle: "내가 추천한 음악들",
         user,
     });
 };

@@ -8,6 +8,7 @@ import musicRouter from "./routers/musicRouter";
 import userRouter from "./routers/userRouter";
 import { localsMiddleware } from "./middlewares";
 import apiRouter from "./routers/apiRouter";
+import playlistRouter from "./routers/playlistRouter";
 
 const app = express();
 const logger = morgan("dev");
@@ -37,6 +38,7 @@ app.use("/assets", express.static("assets"));
 app.use("/", rootRouter);
 app.use("/music", musicRouter);
 app.use("/users", userRouter);
+app.use("/playlist", playlistRouter);
 app.use("/api", apiRouter);
 
 export default app;

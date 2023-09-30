@@ -1,0 +1,7 @@
+extends base
+
+block section
+    form.defaultFormStyle(method="post")
+        span.formTopSpan 플레이리스트 생성
+        input(type="text", required, name="title", placeholder="플레이리스트 제목")
+        input(type="submit", value="플레이리스트 생성")

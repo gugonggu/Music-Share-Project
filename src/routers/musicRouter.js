@@ -28,9 +28,5 @@ musicRouter
     .all(protectorMiddleware)
     .get(getUpload)
     .post(postUpload);
-musicRouter
-    .route("/others-playlist")
-    .get(getOthersPlaylist)
-    .post(postOthersPlaylist);
 
 export default musicRouter;

@@ -1,3 +1,5 @@
+include mixins/playlistLink
+
 doctype html 
 html(lang="ko")
     head
@@ -27,20 +29,19 @@ html(lang="ko")
             a#navHomeBtn(href="/search")
                 i.fa-solid.fa-magnifying-glass.fa-xl
                 span 검색
-            hr
             if loggedIn
                 a#myPlayListBtn(href=`/users/${loggedInUser._id}`)
                     i.fa-solid.fa-thumbs-up.fa-xl
                     span 내가 추천한 음악
-                a(href="/")
-                    i.fa-solid.fa-thumbs-up.fa-xl
-                    span 내가 좋아요 표시한 음악
-                a(href="/") 
-                    i.fa-solid.fa-list.fa-xl
-                    span 플레이리스트
-            a#otherRecommendBtn(href="/music/others-playlist")
-                i.fa-solid.fa-users.fa-lg
-                span 장르로 찾기 수정예정
+            hr
+            //- if loggedIn
+            //-     each value in playlist 
+            //-         +playlistLink(value)
+            //-     else
+            //-         a(href="/playlist/create")
+            //-             i.fa-solid.fa-list.fa-xl
+            //-             span 플레이리스트 생성
+
         main
             header
                 button.openNavBtn
@@ -48,6 +49,7 @@ html(lang="ko")
                 a.pageTitleA(href="/") Chillin on the beat
                 if loggedIn
                     a.uploadA(href="/music/upload") 음악 추천하기
+                    a.createPlaylistA(href="/playlist/create") 플레이리스트 생성
                     a.editprofA(href="/users/edit-profile") 계정 관리
                     a.logoutA(href="/users/logout") 로그아웃
                 else

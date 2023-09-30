@@ -168,8 +168,6 @@ const successGetLocation = (position) => {
                 weatherMusics = document.querySelectorAll(".weatherMixin");
                 reAddAnimation(weatherMusics);
             }
-
-            weatherSpan.innerText = data.weather[0].main;
             weatherIcon.src = `http://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
         })
         .catch((error) => {
@@ -177,7 +175,7 @@ const successGetLocation = (position) => {
         });
 };
 const failGetLocation = () => {
-    weatherSpan.innerText = "날씨 정보를 가져올 수 없습니다.";
+    weatherTitle.innerText = "날씨 정보를 가져올 수 없습니다.";
 };
 navigator.geolocation.getCurrentPosition(successGetLocation, failGetLocation);
 

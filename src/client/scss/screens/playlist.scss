@@ -1,0 +1,64 @@
+.playlistContainer {
+    .playlistInfoContainer {
+        display: flex;
+        margin-top: 75px;
+        margin-left: 200px;
+        .playlistImg {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            flex-wrap: wrap;
+            .playlistImg1 {
+                width: 125px;
+                height: 125px;
+                background-color: wheat;
+            }
+            .playlistImg2 {
+                width: 125px;
+                height: 125px;
+                background-color: aliceblue;
+            }
+            .playlistImg3 {
+                width: 125px;
+                height: 125px;
+                background-color: tomato;
+            }
+            .playlistImg4 {
+                width: 125px;
+                height: 125px;
+                background-color: skyblue;
+            }
+        }
+        .playlistInfo {
+            margin-left: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            .playlistTitle {
+                font-size: 48px;
+                font-weight: 600;
+            }
+            .playlistCreator {
+            }
+            .playlistLength {
+            }
+            .playlistControlButtonContainer {
+                button {
+                    cursor: pointer;
+                    border: 1px solid white;
+                    padding: 10px 8px;
+                    border-radius: 20px;
+                    font-family: "Noto Sans KR", sans-serif;
+                }
+                .playlistDelete {
+                    background-color: black;
+                    color: white;
+                }
+                .playlistEdit {
+                    margin-left: 20px;
+                    background-color: white;
+                }
+            }
+        }
+    }
+}

@@ -1,11 +1,26 @@
 .search-wrap {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 5%;
     margin: 30px 0;
     .search__form {
         position: relative;
-        width: 30%;
+        .searchOptionContainer {
+            display: flex;
+            align-items: center;
+            select {
+                font-family: "Noto Sans KR", sans-serif;
+                color: white;
+                background-color: rgb(24, 24, 32);
+                border-radius: 5px;
+                height: 27px;
+                text-align: center;
+            }
+            .searchFormTopSpan {
+                font-weight: 500;
+                font-size: 20px;
+            }
+        }
         input {
             height: 35px;
             border: 1px solid rgb(48, 48, 61);
@@ -18,14 +33,72 @@
         }
         button {
             position: absolute;
+            bottom: 30px;
+            right: 17px;
             height: 47px;
             width: 47px;
             cursor: pointer;
             border-radius: 15px;
-            top: 0;
-            right: -27px;
             border: none;
-            background: transparent;
+            background-color: transparent;
+        }
+    }
+}
+
+.music__search-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 608px;
+    flex-wrap: nowrap;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin-right: 5%;
+    margin-bottom: 76px;
+    &::-webkit-scrollbar {
+        width: 10px;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: aliceblue;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .music__search {
+        cursor: pointer;
+        width: 90%;
+        display: flex;
+        margin: 0 5%;
+        padding: 8px 10px;
+        text-decoration: none;
+        .music__search-img-wrap {
+            width: 60px;
+            height: 60px;
+            img {
+                border-radius: 5px;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+        .music__search-mixin-data {
+            width: 100%;
+            padding-top: 10px;
+            padding-left: 15px;
+            p {
+                color: white;
+                font-weight: 500;
+                margin-bottom: 10px;
+            }
+            .music__search-mixin-artist-wrap {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                .music__search-mixin-artist {
+                    color: rgb(190, 190, 190);
+                }
+            }
         }
     }
 }

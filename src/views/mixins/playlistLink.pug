@@ -1,0 +1,4 @@
+mixin playlistLink(playlist)
+    a(href=`/playlist/${playlist._id}`)
+        i.fa-solid.fa-list.fa-xl
+        span= playlist.title

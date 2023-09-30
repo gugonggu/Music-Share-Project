@@ -1,0 +1,18 @@
+extends base
+
+block section
+    .playlistContainer
+        .playlistInfoContainer
+            .playlistImg
+                .playlistImg1
+                .playlistImg2
+                .playlistImg3
+                .playlistImg4
+            .playlistInfo
+                span.playlistTitle= playlist.title
+                span.playlistCreator= playlist.meta.creator.username
+                span.playlistLength 음악 #{ playlist.list.length }개
+                .playlistControlButtonContainer
+                    button.playlistDelete 플레이리스트 삭제
+                    button.playlistEdit 플레이리스트 정보 수정
+        .musicList

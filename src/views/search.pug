@@ -1,23 +1,28 @@
 extends base.pug
-include mixins/music
+include mixins/searchMusic
 
 block section
     .search-wrap
-        form.search__form(method="GET")
-            input(name="titleKeyword", type="text", placeholder="제목으로 검색")
-            button
-                i.fas.fa-search.fa-xl
-        form.search__form(method="GET")
-            input(name="artistKeyword", type="text", placeholder="아티스트로 검색")
-            button
-                i.fas.fa-search.fa-xl
-        form.search__form(method="GET")
-            input(name="genreKeyword", type="text", placeholder="장르로 검색")
+        form.search__form.defaultFormStyle(method="GET")
+            .searchOptionContainer
+                select#select
+                    option(value="title") 제목
+                    option(value="artist") 아티스트
+                    option(value="genre") 장르
+                span.searchFormTopSpan 으로 검색
+            input#searchInput(
+                name="titleKeyword",
+                type="text",
+                placeholder="제목으로 검색"
+            )
             button
                 i.fas.fa-search.fa-xl
 
-    .music-grid
+    .music__search-list
         each music in musics
-            +music(music)
+            +searchMusic(music)
         else
             span.empty_message 음악을 찾을 수 없습니다.
+
+block scripts
+    script(src="/assets/js/search.js") 

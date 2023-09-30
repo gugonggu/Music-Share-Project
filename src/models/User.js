@@ -29,6 +29,7 @@ const userSchema = new mongoose.Schema({
         },
     ],
     soundValue: { type: Number, default: 50, required: true },
+    playlists: [{ type: mongoose.Schema.Types.ObjectId, ref: "Playlist" }],
 });
 
 userSchema.pre("save", async function () {
