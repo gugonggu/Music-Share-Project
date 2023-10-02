@@ -1,5 +1,6 @@
 extends ../base.pug
 include ../mixins/musicVertical.pug
+include ../mixins/userPlaylist.pug
 
 block section
     .music__wrap
@@ -116,8 +117,20 @@ block section
                 a#moreAnchor(href=`/search?artistKeyword=${music.artist}`) 이 아티스트의 노래
             li.more__playlist-save
                 i.fa-solid.fa-plus.fa-lg
-                span 내 플레이리스트에 저장
+                span#playlistButton 내 플레이리스트에 저장
     .listenBlurDiv
+    .addToPlaylistModalBackground.hide
+        .addToPlaylistModal
+            .modalHeader
+                span 내 재생목록에 저장
+                i#closeModal.fa-solid.fa-xmark.fa-2x
+            .userPlaylistContainer
+                each value in userPlaylists 
+                    +userPlaylist(value)
+                else
+                    a.playlist.playlistEmpty(href="/playlist/create")
+                        i.fa-solid.fa-plus.fa-xl
+                        span 플레이리스트 생성
 
 block scripts
     script(src="https://www.youtube.com/iframe_api", async) 

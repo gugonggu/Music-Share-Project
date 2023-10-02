@@ -1,0 +1,8 @@
+mixin userPlaylist(playlist)
+    .playlist
+        .playlistInfoContainer
+            .playlistImg
+            .playlistInfo
+                span.playlistTitle= playlist.title
+                span.playlistLength 음악 #{ playlist.list.length }개
+        i.fa-solid.fa-plus.fa-xl

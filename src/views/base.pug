@@ -1,5 +1,3 @@
-include mixins/playlistLink
-
 doctype html 
 html(lang="ko")
     head
@@ -34,13 +32,7 @@ html(lang="ko")
                     i.fa-solid.fa-thumbs-up.fa-xl
                     span 내가 추천한 음악
             hr
-            //- if loggedIn
-            //-     each value in playlist 
-            //-         +playlistLink(value)
-            //-     else
-            //-         a(href="/playlist/create")
-            //-             i.fa-solid.fa-list.fa-xl
-            //-             span 플레이리스트 생성
+            .playlistContainer
 
         main
             header

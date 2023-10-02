@@ -14,9 +14,16 @@ import {
     getMoreTimeMusics,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
+import { getUserPlaylist } from "../controllers/playlistController";
 import { protectorMiddleware } from "../middlewares";
 
 const apiRouter = express.Router();
+
+apiRouter.get(
+    "/playlist/getUserPlaylist",
+    protectorMiddleware,
+    getUserPlaylist
+);
 
 apiRouter.patch(
     "/musics/recommend-by-weather",

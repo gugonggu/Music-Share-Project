@@ -498,12 +498,18 @@ export const listen = async (req, res) => {
         }
         isLiked = false;
     }
+
+    // 유저 플레이리스트
+    const userPlaylistPopulate = await User.findById(_id).populate("playlists");
+    const userPlaylists = userPlaylistPopulate.playlists;
+
     return res.render("musics/listen", {
         pageTitle: music.title,
         music: music,
         vList: vList,
         isLiked: isLiked,
         re: re,
+        userPlaylists: userPlaylists,
     });
 };
 

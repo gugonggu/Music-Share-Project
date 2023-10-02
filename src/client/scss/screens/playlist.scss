@@ -39,25 +39,46 @@
                 font-weight: 600;
             }
             .playlistCreator {
+                color: lightgray;
             }
             .playlistLength {
+                color: lightgray;
             }
             .playlistControlButtonContainer {
-                button {
-                    cursor: pointer;
+                a {
+                    text-decoration: none;
                     border: 1px solid white;
                     padding: 10px 8px;
                     border-radius: 20px;
-                    font-family: "Noto Sans KR", sans-serif;
+                    span {
+                        margin-right: 10px;
+                    }
                 }
                 .playlistDelete {
                     background-color: black;
-                    color: white;
                 }
                 .playlistEdit {
                     margin-left: 20px;
                     background-color: white;
+                    border: 1px solid black;
+                    span {
+                        color: black;
+                    }
+                    i {
+                        color: black;
+                    }
                 }
+            }
+        }
+    }
+    .musicList {
+        margin: 50px 200px 0 200px;
+        .playlistAddMusic {
+            cursor: pointer;
+            padding: 20px 10px;
+            border-top: 1px solid lightgray;
+            i {
+                margin-right: 10px;
             }
         }
     }

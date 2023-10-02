@@ -1,0 +1,13 @@
+extends base
+
+block section
+    form.defaultFormStyle(method="post")
+        span.formTopSpan 플레이리스트 정보 수정
+        input(
+            type="text",
+            placeholder="제목",
+            name="title",
+            required,
+            value=playlist.title
+        )
+        input(type="submit")

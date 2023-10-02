@@ -778,3 +778,19 @@ verticalMore.addEventListener("click", async () => {
         }
     }
 });
+
+const playlistButton = document.querySelector(".more__playlist-save");
+const modal = document.querySelector(".addToPlaylistModalBackground");
+const closeModal = document.getElementById("closeModal");
+
+playlistButton.addEventListener("click", async () => {
+    modal.classList.remove("hide");
+});
+
+closeModal.addEventListener("click", () => {
+    modal.classList.add("hide");
+});
+
+// modal.addEventListener("click", () => {
+//     modal.classList.add("hide");
+// });

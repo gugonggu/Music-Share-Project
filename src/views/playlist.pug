@@ -13,6 +13,13 @@ block section
                 span.playlistCreator= playlist.meta.creator.username
                 span.playlistLength 음악 #{ playlist.list.length }개
                 .playlistControlButtonContainer
-                    button.playlistDelete 플레이리스트 삭제
-                    button.playlistEdit 플레이리스트 정보 수정
+                    a.playlistDelete(href=`/playlist/${playlist._id}/delete`)
+                        span 플레이리스트 삭제
+                        i.fa-solid.fa-trash.fa-xl
+                    a.playlistEdit(href=`/playlist/${playlist._id}/edit`)
+                        span 플레이리스트 정보 수정
+                        i.fa-solid.fa-pen-to-square.fa-xl
         .musicList
+            .playlistAddMusic
+                i.fa-solid.fa-plus.fa-xl
+                span 플레이리스트에 음악 추가하기
