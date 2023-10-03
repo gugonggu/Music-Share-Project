@@ -3,6 +3,8 @@ include ../mixins/musicVertical.pug
 include ../mixins/userPlaylist.pug
 
 block section
+    .message.hide
+        span.messageContent
     .music__wrap
         .music__control-wrap
             .music__control-top
@@ -122,13 +124,13 @@ block section
     .addToPlaylistModalBackground.hide
         .addToPlaylistModal
             .modalHeader
-                span 내 재생목록에 저장
+                span 내 플레이리스트에 저장
                 i#closeModal.fa-solid.fa-xmark.fa-2x
             .userPlaylistContainer
                 each value in userPlaylists 
                     +userPlaylist(value)
                 else
-                    a.playlist.playlistEmpty(href="/playlist/create")
+                    a.playlistEmpty(href="/playlist/create")
                         i.fa-solid.fa-plus.fa-xl
                         span 플레이리스트 생성
 

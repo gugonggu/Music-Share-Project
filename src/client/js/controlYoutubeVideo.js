@@ -151,7 +151,34 @@ const changeCurMusicInfo = async (v) => {
             }
         }
     }
-    history.pushState(null, "", v.dataset.musicid);
+    const urlParams = new URL(window.location.href).searchParams;
+    if (urlParams.has("re")) {
+        history.pushState(
+            null,
+            "",
+            `${v.dataset.musicid}?re=${urlParams.get("re")}`
+        );
+    } else if (urlParams.has("weather")) {
+        history.pushState(
+            null,
+            "",
+            `${v.dataset.musicid}?weather=${urlParams.get("weather")}`
+        );
+    } else if (urlParams.has("time")) {
+        history.pushState(
+            null,
+            "",
+            `${v.dataset.musicid}?time=${urlParams.get("time")}`
+        );
+    } else if (urlParams.has("playlist")) {
+        history.pushState(
+            null,
+            "",
+            `${v.dataset.musicid}?playlist=${urlParams.get("playlist")}`
+        );
+    } else {
+        history.pushState(null, "", v.dataset.musicid);
+    }
 };
 
 let list = [];
@@ -782,6 +809,38 @@ verticalMore.addEventListener("click", async () => {
 const playlistButton = document.querySelector(".more__playlist-save");
 const modal = document.querySelector(".addToPlaylistModalBackground");
 const closeModal = document.getElementById("closeModal");
+const playlists = document.querySelectorAll(".playlist");
+const message = document.querySelector(".message");
+const messageContent = document.querySelector(".messageContent");
+
+playlists.forEach((v) => {
+    v.addEventListener("click", async () => {
+        const response = await fetch("/api/playlist/add", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                musicId: iframe.dataset.currentmusicid,
+                playlistId: v.dataset.playlistid,
+            }),
+        });
+        if (response.status === 200) {
+            messageContent.innerText =
+                "음악이 성공적으로 플레이리스트에 추가되었습니다.";
+            message.classList.add("success");
+            message.classList.remove("hide");
+        } else if (response.status === 202) {
+            messageContent.innerText =
+                "이미 플레이리스트에 추가되어있는 음악입니다.";
+            message.classList.add("error");
+            message.classList.remove("hide");
+        } else {
+            messageContent.innerText =
+                "플레이리스트에 음악을 추가하는 과정에서 오류가 발생했습니다.";
+            message.classList.add("error");
+            message.classList.remove("hide");
+        }
+    });
+});
 
 playlistButton.addEventListener("click", async () => {
     modal.classList.remove("hide");
@@ -791,6 +850,23 @@ closeModal.addEventListener("click", () => {
     modal.classList.add("hide");
 });
 
-// modal.addEventListener("click", () => {
-//     modal.classList.add("hide");
-// });
+modal.addEventListener("click", () => {
+    modal.classList.add("hide");
+});
+
+const url = new URL(window.location.href);
+const urlSplit = String(url).split("/");
+const urlParams = url.searchParams;
+if (urlParams.has("playlist")) {
+    const currentMusicId = urlSplit[urlSplit.length - 1].split("?")[0];
+    for (let i = 0; i < musics.length; i++) {
+        if (currentMusicId === musics[i].dataset.musicid) {
+            curMusic = i;
+            break;
+        }
+    }
+    musics.forEach((e) => {
+        e.classList.remove("nowPlaying");
+    });
+    list[curMusic].classList.add("nowPlaying");
+}

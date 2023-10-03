@@ -39,13 +39,12 @@ blur.addEventListener("click", () => {
                 </a>`;
                 playlistContainer.innerHTML += template;
             });
-        } else {
-            playlistContainer.innerHTML += `
+        }
+        playlistContainer.innerHTML += `
             <a href="/playlist/create">
                 <i class="fa-solid fa-plus fa-xl"></i>
                 <span>플레이리스트 생성</span>
             </a>
             `;
-        }
     }
 })();

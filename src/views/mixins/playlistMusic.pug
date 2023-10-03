@@ -1,0 +1,12 @@
+mixin playlistMusic(music)
+    .playlistMusicMixin
+        a.playlistMusicAnchor(
+            href=`/music/${music._id}?playlist=${playlist._id}`
+        )
+            .playlistMusicImgCutter
+                img(src=music.musicInfo.musicThumbnailSrc, alt="")
+            span.playlistMusicTitle= music.title
+            span.playlistMusicArtist= music.artist
+            span.playlistMusicGenre= music.genre
+        .playlistMusicDeleteWrap(data-musicid=music._id)
+            i.fa-solid.fa-minus.fa-lg

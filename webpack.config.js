@@ -10,6 +10,7 @@ module.exports = {
         controlYoutubeVideo: BASE_JS + "controlYoutubeVideo.js",
         upload: BASE_JS + "upload.js",
         search: BASE_JS + "search.js",
+        playlist: BASE_JS + "playlist.js",
     },
     mode: "development",
     watch: true,

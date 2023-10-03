@@ -1,5 +1,7 @@
 import Music from "../models/Music";
 import User from "../models/User";
+import playlist from "../models/Playlist";
+import Playlist from "../models/Playlist";
 
 export const home = async (req, res) => {
     const {
@@ -212,6 +214,7 @@ export const listen = async (req, res) => {
     const { re } = req.query;
     const { weather } = req.query;
     const { time } = req.query;
+    const { playlist } = req.query;
     const music = await Music.findById(id).populate("recommender", "username");
     if (!music) {
         return res.render("404", {
@@ -462,6 +465,21 @@ export const listen = async (req, res) => {
                 vList.push(functionList[i]);
             }
         }
+    } else if (playlist) {
+        // 플레이리스트
+        const playlists = await Playlist.findById(playlist).populate({
+            path: "list",
+            populate: { path: "recommender" },
+        });
+        if (playlists.list.length < 7) {
+            playlists.list.forEach((v) => {
+                vList.push(v);
+            });
+        } else {
+            for (let i = 0; i < 7; i++) {
+                vList.push(playlists.list[i]);
+            }
+        }
     } else {
         // 랜덤 트랙 리스트 구현 코드
         const allMusic = await Music.find().populate("recommender", "username");
@@ -500,8 +518,28 @@ export const listen = async (req, res) => {
     }
 
     // 유저 플레이리스트
-    const userPlaylistPopulate = await User.findById(_id).populate("playlists");
-    const userPlaylists = userPlaylistPopulate.playlists;
+    const userPlaylistPopulate = await User.findById(_id).populate({
+        path: "playlists",
+        populate: { path: "list" },
+    });
+    let userPlaylists = userPlaylistPopulate.playlists;
+    for (let i = 0; i < userPlaylists.length; i++) {
+        userPlaylists[i].thumbnail = [];
+        if (userPlaylists[i].list.length > 3) {
+            for (let j = 0; j < 4; j++) {
+                userPlaylists[i].thumbnail.push(
+                    userPlaylists[i].list[j].musicInfo.musicThumbnailSrc
+                );
+            }
+        } else if (
+            0 < userPlaylists[i].list.length &&
+            userPlaylists[i].list.length < 3
+        ) {
+            userPlaylists[i].thumbnail.push(
+                userPlaylists[i].list[0].musicInfo.musicThumbnailSrc
+            );
+        }
+    }
 
     return res.render("musics/listen", {
         pageTitle: music.title,

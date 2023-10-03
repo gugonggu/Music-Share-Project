@@ -1,7 +1,20 @@
 mixin userPlaylist(playlist)
-    .playlist
+    .playlist(data-playlistid=playlist._id)
         .playlistInfoContainer
             .playlistImg
+                if playlist.thumbnail.length > 3
+                    .playlistImgSmallCutter
+                        img.playlistImgSmall(src=playlist.thumbnail[0], alt="")
+                    .playlistImgSmallCutter
+                        img.playlistImgSmall(src=playlist.thumbnail[1], alt="")
+                    .playlistImgSmallCutter
+                        img.playlistImgSmall(src=playlist.thumbnail[2], alt="")
+                    .playlistImgSmallCutter
+                        img.playlistImgSmall(src=playlist.thumbnail[3], alt="")
+                else if playlist.thumbnail.length === 1
+                    img.playlistImgBig(src=playlist.thumbnail[0], alt="")
+                else
+                    i.fa-solid.fa-compact-disc.fa-2x
             .playlistInfo
                 span.playlistTitle= playlist.title
                 span.playlistLength 음악 #{ playlist.list.length }개

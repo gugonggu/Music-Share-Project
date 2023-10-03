@@ -14,7 +14,11 @@ import {
     getMoreTimeMusics,
 } from "../controllers/musicController";
 import { getSound, postSound } from "../controllers/userController";
-import { getUserPlaylist } from "../controllers/playlistController";
+import {
+    getUserPlaylist,
+    addMusicToPlaylist,
+    deleteMusicFromPlaylist,
+} from "../controllers/playlistController";
 import { protectorMiddleware } from "../middlewares";
 
 const apiRouter = express.Router();
@@ -86,11 +90,18 @@ apiRouter.post(
     protectorMiddleware,
     musicLike
 );
+apiRouter.post("/playlist/add", protectorMiddleware, addMusicToPlaylist);
 
 apiRouter
     .route("/users/:id([0-9a-f]{24})/sound")
     .all(protectorMiddleware)
     .get(getSound)
     .post(postSound);
+
+apiRouter.delete(
+    "/playlist/:playlistId([0-9a-f]{24})/delete/:musicId([0-9a-f]{24})",
+    protectorMiddleware,
+    deleteMusicFromPlaylist
+);
 
 export default apiRouter;

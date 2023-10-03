@@ -44,10 +44,21 @@ export const getPlaylist = async (req, res) => {
     const {
         params: { id },
     } = req;
-    const playlist = await Playlist.findById(id).populate("meta.creator");
+    const playlist = await Playlist.findById(id)
+        .populate("meta.creator")
+        .populate("list");
+    let thumbnails = [];
+    if (playlist.list.length > 3) {
+        for (let i = 0; i < 4; i++) {
+            thumbnails.push(playlist.list[i].musicInfo.musicThumbnailSrc);
+        }
+    } else if (playlist.list.length > 0 && playlist.list.length < 4) {
+        thumbnails.push(playlist.list[0].musicInfo.musicThumbnailSrc);
+    }
     return res.render("playlist", {
         pageTitle: playlist.title,
         playlist,
+        thumbnails,
     });
 };
 
@@ -88,6 +99,16 @@ export const getDeletePlaylist = async (req, res) => {
     );
     user.playlists = filteredUserPlaylist;
     await user.save();
+
+    const allPlaylist = await Playlist.find();
+    for (let i = 0; i < allPlaylist.length; i++) {
+        const filteredUserPlaylist = allPlaylist[i].filter(
+            (v) => String(v._id) !== String(id)
+        );
+        allPlaylist[i] = filteredUserPlaylist;
+        await allPlaylist[i].save();
+    }
+
     await Playlist.findByIdAndDelete(id);
     return res.redirect("/");
 };
@@ -130,4 +151,39 @@ export const postPlaylistEdit = async (req, res) => {
     await playlist.save();
     req.flash("success", "변경사항이 저장되었습니다.");
     return res.redirect(`/playlist/${id}`);
+};
+
+export const addMusicToPlaylist = async (req, res) => {
+    const {
+        body: { musicId, playlistId },
+    } = req;
+    const playlist = await Playlist.findById(playlistId);
+    let isDup = false;
+    for (let i = 0; i < playlist.list.length; i++) {
+        if (String(playlist.list[i]._id) === String(musicId)) {
+            isDup = true;
+            break;
+        }
+    }
+    if (isDup === true) {
+        return res.sendStatus(202);
+    } else {
+        playlist.list.unshift(musicId);
+        await playlist.save();
+        return res.sendStatus(200);
+    }
+};
+
+export const deleteMusicFromPlaylist = async (req, res) => {
+    const {
+        params: { playlistId, musicId },
+    } = req;
+    console.log(playlistId, musicId);
+    const playlist = await Playlist.findById(playlistId);
+    const filteredPlaylistList = playlist.list.filter(
+        (v) => String(v) !== String(musicId)
+    );
+    playlist.list = filteredPlaylistList;
+    await playlist.save();
+    return res.sendStatus(200);
 };

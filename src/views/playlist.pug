@@ -1,13 +1,26 @@
 extends base
 
+include mixins/playlistMusic.pug
+
 block section
-    .playlistContainer
+    #playlistId.playlistContainer(data-playlistid=playlist._id)
         .playlistInfoContainer
             .playlistImg
-                .playlistImg1
-                .playlistImg2
-                .playlistImg3
-                .playlistImg4
+                if thumbnails.length === 4
+                    .playlistImgSmall
+                        img(src=thumbnails[0], alt="")
+                    .playlistImgSmall
+                        img(src=thumbnails[1], alt="")
+                    .playlistImgSmall
+                        img(src=thumbnails[2], alt="")
+                    .playlistImgSmall
+                        img(src=thumbnails[3], alt="")
+                else if thumbnails.length > 0 && thumbnails.length < 4
+                    .playlistImgBig
+                        img(src=thumbnails[0], alt="")
+                else
+                    .playlistImgEmpty
+                        i.fa-solid.fa-compact-disc.fa-10x
             .playlistInfo
                 span.playlistTitle= playlist.title
                 span.playlistCreator= playlist.meta.creator.username
@@ -15,11 +28,16 @@ block section
                 .playlistControlButtonContainer
                     a.playlistDelete(href=`/playlist/${playlist._id}/delete`)
                         span 플레이리스트 삭제
-                        i.fa-solid.fa-trash.fa-xl
+                        i.fa-solid.fa-trash.fa-lg
                     a.playlistEdit(href=`/playlist/${playlist._id}/edit`)
                         span 플레이리스트 정보 수정
-                        i.fa-solid.fa-pen-to-square.fa-xl
+                        i.fa-solid.fa-pen-to-square.fa-lg
         .musicList
+            each music in playlist.list 
+                +playlistMusic(music)
             .playlistAddMusic
                 i.fa-solid.fa-plus.fa-xl
                 span 플레이리스트에 음악 추가하기
+
+block scripts
+    script(src="/assets/js/playlist.js") 
