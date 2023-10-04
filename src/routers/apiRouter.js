@@ -18,6 +18,7 @@ import {
     getUserPlaylist,
     addMusicToPlaylist,
     deleteMusicFromPlaylist,
+    getMorePlaylist,
 } from "../controllers/playlistController";
 import { protectorMiddleware } from "../middlewares";
 
@@ -73,6 +74,11 @@ apiRouter.patch(
     "/musics/get-more-time-musics",
     protectorMiddleware,
     getMoreTimeMusics
+);
+apiRouter.patch(
+    "/playlist/get-more-playlists",
+    protectorMiddleware,
+    getMorePlaylist
 );
 
 apiRouter.post(

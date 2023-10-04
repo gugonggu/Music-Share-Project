@@ -1,0 +1,36 @@
+mixin homePlaylists(playlist)
+    a.playlistMixin.music-mixin(
+        href=`/playlist/${playlist._id}`,
+        data-playlistid=playlist._id
+    )
+        .playlistImgCutter
+            if playlist.list.length > 3
+                .playlistImgSmall
+                    img(
+                        src=playlist.list[0].musicInfo.musicThumbnailSrc,
+                        alt=""
+                    )
+                .playlistImgSmall
+                    img(
+                        src=playlist.list[1].musicInfo.musicThumbnailSrc,
+                        alt=""
+                    )
+                .playlistImgSmall
+                    img(
+                        src=playlist.list[2].musicInfo.musicThumbnailSrc,
+                        alt=""
+                    )
+                .playlistImgSmall
+                    img(
+                        src=playlist.list[3].musicInfo.musicThumbnailSrc,
+                        alt=""
+                    )
+            else
+                .playlistImgBig
+                    img(
+                        src=playlist.list[0].musicInfo.musicThumbnailSrc,
+                        alt=""
+                    )
+        .playlistData.music-mixin__data
+            span.playlistDataTitle.music-mixin__title #{ playlist.title }
+            span.playlistDataCreaor.music-mixin__artist #{ playlist.meta.creator.username }

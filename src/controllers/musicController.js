@@ -143,6 +143,37 @@ export const home = async (req, res) => {
     // 계절 (월) 불러오기
     const month = now.getMonth() + 1;
 
+    // 플레이리스트 불러오기
+    const dbPlaylists = await Playlist.find()
+        .populate("meta.creator")
+        .populate("list");
+    let dbPlaylistsCopy = [...dbPlaylists];
+    dbPlaylistsCopy = dbPlaylistsCopy.filter((v) => v.list.length > 0);
+    let playlists = [];
+    if (dbPlaylistsCopy.length < 7) {
+        while (playlists.length !== dbPlaylistsCopy.length) {
+            const randomIndex = Math.floor(
+                Math.random() * dbPlaylistsCopy.length
+            );
+            if (playlists.includes(dbPlaylistsCopy[randomIndex])) {
+                continue;
+            } else {
+                playlists.push(dbPlaylistsCopy[randomIndex]);
+            }
+        }
+    } else if (dbPlaylistsCopy.length >= 7) {
+        while (playlists.length !== 7) {
+            const randomIndex = Math.floor(
+                Math.random() * dbPlaylistsCopy.length
+            );
+            if (playlists.includes(dbPlaylistsCopy[randomIndex])) {
+                continue;
+            } else {
+                playlists.push(dbPlaylistsCopy[randomIndex]);
+            }
+        }
+    }
+
     return res.render("home", {
         pageTitle: "Home",
         randomMusicList,
@@ -153,6 +184,7 @@ export const home = async (req, res) => {
         timeTitle,
         hour,
         month,
+        playlists,
     });
 };
 

@@ -656,38 +656,41 @@ musicSameGenre.addEventListener("click", async () => {
 });
 
 shuffleBtn.addEventListener("click", async () => {
-    const list = [];
-    musics.forEach((v) => {
-        list.push(v.dataset.musicid);
+    musics = document.querySelectorAll(".music__vertical");
+    let willPrintedMusics = musics[curMusic];
+    musics = [...musics]
+        .filter((v) => v !== musics[curMusic])
+        .sort(() => Math.random() - 0.5);
+    willPrintedMusics = [willPrintedMusics, ...musics];
+    musicList.innerHTML = "";
+    willPrintedMusics.forEach((v) => {
+        const template = `
+        <div class="music__vertical" data-musicid=${v.dataset.musicid} data-verticalmusicsrc=${v.dataset.verticalmusicsrc}>
+            <div class="music__vertical-img-wrap">
+                <img src=${v.children[0].children[0].currentSrc} alt=""></img>
+            </div>
+            <div class="music__vertical-mixin-data">
+                <p class="music__vertical-mixin-title">${v.children[1].children[0].innerText}</p>
+                <div class="music__vertical-mixin-artist-wrap" data-recommenderid=${v.children[1].children[1].dataset.recommenderid} data-recommender=${v.children[1].children[1].dataset.recommender}>
+                    <span class="music__vertical-mixin-artist">${v.children[1].children[1].children[0].innerText}</span>
+                </div>
+            </div>
+        </div>
+        `;
+        musicList.innerHTML += template;
     });
     curMusic = 0;
-    const musicId = iframe.dataset.currentmusicid;
-    if (musicRandom.classList.contains("listSelected")) {
-        const response = await fetch(`/api/musics/${musicId}/random`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ list: list }),
+    musics = document.querySelectorAll(".music__vertical");
+    musics[curMusic].classList.add("nowPlaying");
+    list = [];
+    musics.forEach((v) => {
+        list.push(v);
+        v.addEventListener("click", () => {
+            changeCurMusicInfo(v);
+            const musicsList = Array.prototype.slice.call(musics);
+            curMusic = musicsList.indexOf(v);
         });
-        if (response.status === 200) {
-            const { randomMusicList } = await response.json();
-            printMusicList(randomMusicList);
-        }
-    } else {
-        const response = await fetch(`/api/musics/${musicId}/sameGenre`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ list: list }),
-        });
-        if (response.status === 200) {
-            const { sameGenreList } = await response.json();
-            printMusicList(sameGenreList);
-            verticalMore.classList.remove("cantmore");
-        }
-    }
+    });
 });
 
 const printVerticalMusic = (arr) => {

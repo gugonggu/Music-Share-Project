@@ -187,3 +187,46 @@ export const deleteMusicFromPlaylist = async (req, res) => {
     await playlist.save();
     return res.sendStatus(200);
 };
+
+export const getMorePlaylist = async (req, res) => {
+    const {
+        body: { curPlaylistList },
+    } = req;
+    const playlist = await Playlist.find();
+    const allPlaylist = playlist.filter((v) => v.list.length !== 0);
+    const jsonPlaylists = [];
+    if (curPlaylistList.length + 7 < allPlaylist.length) {
+        // 7개를 더해도 부족할 때
+        while (jsonPlaylists.length !== curPlaylistList.length + 7) {
+            const randomIndex = Math.floor(Math.random() * allPlaylist.length);
+            if (
+                curPlaylistList.includes(String(allPlaylist[randomIndex]._id))
+            ) {
+                continue;
+            } else if (jsonPlaylists.includes(allPlaylist[randomIndex])) {
+                continue;
+            } else {
+                jsonPlaylists.push(allPlaylist[randomIndex]);
+            }
+        }
+    } else {
+        // 7개를 더하면 전체 플레이리스트 길이보다 클 때
+        while (
+            jsonPlaylists.length + curPlaylistList.length !==
+            allPlaylist.length
+        ) {
+            const randomIndex = Math.floor(Math.random() * allPlaylist.length);
+            if (
+                curPlaylistList.includes(String(allPlaylist[randomIndex]._id))
+            ) {
+                continue;
+            } else if (jsonPlaylists.includes(allPlaylist[randomIndex])) {
+                continue;
+            } else {
+                jsonPlaylists.push(allPlaylist[randomIndex]);
+            }
+        }
+    }
+    console.log(jsonPlaylists);
+    return res.sendStatus(200);
+};

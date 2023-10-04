@@ -1,0 +1,32 @@
+#playlistGrid {
+    .playlistMixin {
+        .playlistImgCutter {
+            width: 230px;
+            height: 230px;
+            display: flex;
+            flex-wrap: wrap;
+            .playlistImgSmall {
+                width: 115px;
+                height: 115px;
+                & > :nth-child(1) {
+                    border-top-left-radius: 5%;
+                }
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+            .playlistImgBig {
+                width: 230px;
+                height: 230px;
+                img {
+                    border-radius: 5%;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+        }
+    }
+}

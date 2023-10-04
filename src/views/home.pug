@@ -2,6 +2,7 @@ extends base.pug
 include mixins/music
 include mixins/userListenedMusic
 include mixins/timeMusic
+include mixins/homePlaylists
 
 block section
     .homeWrap
@@ -51,6 +52,19 @@ block section
                     +timeMusic(music)
                 else
                     span.empty__message 음악을 찾을 수 없습니다.
+
+        .recommendWrap
+            .musicRecommendControl
+                span.musicRecommendTitle 플레이리스트
+                if playlists.length < 7
+                    button#playlistMoreBtn.cantmore 더 보기
+                else
+                    button#playlistMoreBtn 더 보기
+            #playlistGrid.music-grid
+                each playlist in playlists 
+                    +homePlaylists(playlist)
+                else
+                    span.empty__message 플레이리스트를 찿을 수 없습니다.
 
         //- 예정 (최근에 추천된)
 

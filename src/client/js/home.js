@@ -2,6 +2,8 @@ const randomMoreBtn = document.getElementById("randomMoreButton");
 const randomGrid = document.getElementById("randomGrid");
 const listenedMoreBtn = document.getElementById("listenedMoreBtn");
 const listenedGrid = document.getElementById("listenedGrid");
+const playlistMoreBtn = document.getElementById("playlistMoreBtn");
+const playlistGrid = document.getElementById("playlistGrid");
 let allMusics = document.querySelectorAll(".music-mixin");
 let randomMusics = document.querySelectorAll(".randomMixin");
 let listenedMusics = document.querySelectorAll(".listenedMixin");
@@ -247,5 +249,19 @@ timeMoreBtn.addEventListener("click", async () => {
         printTimeMusicList(timeList, hour);
         const timeMusics = document.querySelectorAll(".timeMixin");
         reAddAnimation(timeMusics);
+    }
+});
+
+playlistMoreBtn.addEventListener("click", async () => {
+    const curPlaylistList = [];
+    const playlists = document.querySelectorAll(".playlistMixin");
+    playlists.forEach((v) => curPlaylistList.push(v.dataset.playlistid));
+    const response = fetch("/api/playlist/get-more-playlists", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ curPlaylistList }),
+    });
+    if (response.status === 200) {
+        console.log("HELLO");
     }
 });
