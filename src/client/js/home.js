@@ -256,12 +256,57 @@ playlistMoreBtn.addEventListener("click", async () => {
     const curPlaylistList = [];
     const playlists = document.querySelectorAll(".playlistMixin");
     playlists.forEach((v) => curPlaylistList.push(v.dataset.playlistid));
-    const response = fetch("/api/playlist/get-more-playlists", {
+    const response = await fetch("/api/playlist/get-more-playlists", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ curPlaylistList }),
     });
     if (response.status === 200) {
-        console.log("HELLO");
+        const { jsonPlaylists, isPlaylistAll } = await response.json();
+        jsonPlaylists.forEach((v, i) => {
+            let template = "";
+            if (v.list.length > 3) {
+                template = `
+                <a href="/playlist/${v._id}" class="playlistMixin music-mixin" data-playlistid="${v._id}">
+                    <div class="playlistImgCutter">
+                        <div class="playlistImgSmall">
+                            <img src=${v.list[0].musicInfo.musicThumbnailSrc} alt=""/>
+                        </div>
+                        <div class="playlistImgSmall">
+                            <img src=${v.list[1].musicInfo.musicThumbnailSrc} alt=""/>
+                        </div>
+                        <div class="playlistImgSmall">
+                            <img src=${v.list[2].musicInfo.musicThumbnailSrc} alt=""/>
+                        </div>
+                        <div class="playlistImgSmall">
+                            <img src=${v.list[3].musicInfo.musicThumbnailSrc} alt=""/>
+                        </div>
+                    </div>
+                    <div class="playlistData music-mixin__data">
+                        <span class="playlistDataTitle music-mixin__title">${v.title}</span>
+                        <span class="playlistDataArtist music-mixin__artist">${v.meta.creator.username}</span>
+                    </div>
+                </a>
+            `;
+            } else {
+                template = `
+                <a href="/playlist/${jsonPlaylists[i]._id}" class="playlistMixin music-mixin" data-playlistid="${jsonPlaylists[i]._id}">
+                    <div class="playlistImgCutter">
+                        <div class="playlistImgBig">
+                            <img src="${jsonPlaylists[i].list[0].musicInfo.musicThumbnailSrc}" alt=""/>
+                        </div>
+                    </div>
+                    <div class="playlistData music-mixin__data">
+                        <span class="playlistDataTitle music-mixin__title">${jsonPlaylists[i].title}</span>
+                        <span class="playlistDataArtist music-mixin__artist">${jsonPlaylists[i].meta.creator.username}</span>
+                    </div>
+                </a>
+            `;
+            }
+            playlistGrid.innerHTML += template;
+        });
+        if (isPlaylistAll === true) {
+            playlistMoreBtn.classList.add("cantmore");
+        }
     }
 });

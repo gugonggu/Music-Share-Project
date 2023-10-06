@@ -8,8 +8,17 @@
             .playlistImgSmall {
                 width: 115px;
                 height: 115px;
-                & > :nth-child(1) {
+                &:nth-child(1) > img {
                     border-top-left-radius: 5%;
+                }
+                &:nth-child(2) > img {
+                    border-top-right-radius: 5%;
+                }
+                &:nth-child(3) > img {
+                    border-bottom-left-radius: 5%;
+                }
+                &:nth-child(4) > img {
+                    border-bottom-right-radius: 5%;
                 }
                 img {
                     width: 100%;

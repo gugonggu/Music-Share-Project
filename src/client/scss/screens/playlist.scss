@@ -68,7 +68,8 @@
             }
         }
     }
-    .musicList {
+    .musicList,
+    .additionalList {
         margin: 50px 200px 0 200px;
         .playlistMusicMixin {
             display: flex;
@@ -130,6 +131,25 @@
             border-top: 1px solid lightgray;
             i {
                 margin-right: 10px;
+            }
+            &:hover {
+                background-color: rgba(200, 200, 200, 0.2);
+            }
+        }
+        .reloadButtonContainer {
+            display: flex;
+            justify-content: center;
+            button {
+                font-family: "Open Sans", "Noto Sans KR", sans-serif;
+                background-color: transparent;
+                border: 1px solid lightgray;
+                border-radius: 15px;
+                padding: 5px 10px;
+                color: white;
+                cursor: pointer;
+                &:hover {
+                    background-color: rgba(200, 200, 200, 0.2);
+                }
             }
         }
     }

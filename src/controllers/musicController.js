@@ -173,6 +173,8 @@ export const home = async (req, res) => {
             }
         }
     }
+    const cantMorePlaylist =
+        playlists.length < dbPlaylistsCopy.length ? false : true;
 
     return res.render("home", {
         pageTitle: "Home",
@@ -185,6 +187,7 @@ export const home = async (req, res) => {
         hour,
         month,
         playlists,
+        cantMorePlaylist,
     });
 };
 

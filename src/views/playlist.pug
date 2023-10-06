@@ -38,6 +38,11 @@ block section
             .playlistAddMusic
                 i.fa-solid.fa-plus.fa-xl
                 span 플레이리스트에 음악 추가하기
+        .additionalList
+            each music in playlist.list 
+                +playlistMusic(music)
+            .reloadButtonContainer
+                button 새로고침
 
 block scripts
     script(src="/assets/js/playlist.js") 

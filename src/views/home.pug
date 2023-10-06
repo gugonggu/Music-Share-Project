@@ -56,7 +56,7 @@ block section
         .recommendWrap
             .musicRecommendControl
                 span.musicRecommendTitle 플레이리스트
-                if playlists.length < 7
+                if cantMorePlaylist
                     button#playlistMoreBtn.cantmore 더 보기
                 else
                     button#playlistMoreBtn 더 보기

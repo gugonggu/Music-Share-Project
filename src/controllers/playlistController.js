@@ -192,7 +192,9 @@ export const getMorePlaylist = async (req, res) => {
     const {
         body: { curPlaylistList },
     } = req;
-    const playlist = await Playlist.find();
+    const playlist = await Playlist.find()
+        .populate("meta.creator")
+        .populate("list");
     const allPlaylist = playlist.filter((v) => v.list.length !== 0);
     const jsonPlaylists = [];
     if (curPlaylistList.length + 7 < allPlaylist.length) {
@@ -227,6 +229,11 @@ export const getMorePlaylist = async (req, res) => {
             }
         }
     }
-    console.log(jsonPlaylists);
-    return res.sendStatus(200);
+    const isPlaylistAll =
+        jsonPlaylists.length + curPlaylistList.length === allPlaylist.length
+            ? true
+            : false;
+    return res
+        .status(200)
+        .json({ jsonPlaylists: jsonPlaylists, isPlaylistAll: isPlaylistAll });
 };
