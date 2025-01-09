@@ -4,7 +4,7 @@
 
 ![화면 캡처 2024-12-28 131048](https://github.com/user-attachments/assets/d1f21fa0-8c79-4464-bcc2-423039d1090e)
 
-### 깃 리드미 템플릿 🖍️
+### Chillin on the beat 🎵
 
 <br/> [<img src="https://img.shields.io/badge/프로젝트 기간-2023.06 ~ 2023.10-fab2ac?style=flat&logo=&logoColor=white" />]()
 
@@ -12,75 +12,123 @@
 
 ## 📝 소개
 
-프론트엔드 깃 레파지토리의 README.md를 빠르게 작성하기 위해 만든 템플릿입니다.
+**Chillin on the beat**는 제가 개발한 첫 번째 프로젝트로, **음악을 중심으로 사용자 경험을 풍부하게 만드는 웹 플랫폼**입니다.
 
-다음과 같은 내용을 작성할 수 있습니다.
-
-- 프로젝트 소개
-- 프로젝트 화면 구성
-- 사용한 기술 스택
-- 기술적 이슈와 해결 과정
-- 프로젝트 팀원
-
-필요한 기술 스택에 대한 logo는 [skills 폴더](/skills/)에서 다운로드 받을 수 있습니다.
+- 사용자는 **좋아하는 음악을 공유, 좋아요**를 누르거나 **플레이리스트를 제작**할 수 있습니다.
+- 또한, **날씨와 시간에 맞춘 음악 추천 기능**을 통해 사용자에게 맞춤형 음악 경험을 제공합니다.
+- **데이터베이스 보안**을 강화하기 위해 **bcrypt 암호화** 방식을 활용하여 사용자 비밀번호를 보호합니다.
+- 이 프로젝트는 **Node.js, Express, Pug, Sass, MongoDB**를 사용하여 개발되었습니다.
 
 <br />
 
 ### 화면 구성
 
-|                                                            화면 명                                                             |
-| :----------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/80824750/208456048-acbf44a8-cd71-4132-b35a-500047adbe1c.gif" width="450"/> |
-|                                                 화면에 대한 설명을 입력합니다.                                                 |
+|                                               랜딩 페이지                                                |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/4dc1389d-78bb-4e6c-98d4-af631f11e28b" width="450"/> |
 
-|                                                            화면 명                                                             |
-| :----------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://user-images.githubusercontent.com/80824750/208456234-fb5fe434-aa65-4d7a-b955-89098d5bbe0b.gif" width="450"/> |
-|                                                 화면에 대한 설명을 입력합니다.                                                 |
+플랫폼에 가입을 하거나 로그인을 할 수 있는 랜딩 페이지입니다.
+<br />
+
+|                                                홈 페이지                                                 |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/d1f21fa0-8c79-4464-bcc2-423039d1090e" width="450"/> |
+
+랜덤, 유저 히스토리, 날씨, 시간 기반으로 음악을 추천받을 수 있는 홈 페이지입니다.
+<br />
+
+|                                               감상 페이지                                                |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/51afbc99-1c93-49c4-bba0-0930681d1e4b" width="450"/> |
+
+선택한 음악을 듣고 재생 시간, 음량, 추천과 같은 값을 조절하며,
+다음 음악을 추천받아 음악을 연속적으로 감상할 수 있는 페이지입니다.
+
+<br />
+
+|                                             음악 추천 페이지                                             |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/f5bc7782-45d9-403d-8771-59605a0bfd7f" width="450"/> |
+
+제목, 아티스트, 유튜브 영상 링크, 장르 값을 받아 음악을 추천하는 페이지입니다.
+
+<br />
+
+|                                         내가 추천한 음악 페이지                                          |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/1ee02bdd-eb20-4053-b293-9efb4027e1d2" width="450"/> |
+
+유저가 추천한 음악들을 모아볼 수 있는 페이지입니다.
+
+<br />
+
+|                                         플레이리스트 생성 페이지                                         |
+| :------------------------------------------------------------------------------------------------------: |
+| <img src="https://github.com/user-attachments/assets/b63a735d-00ce-4e53-8f15-74a4065d2fd4" width="450"/> |
+
+플랫폼 내에 추천된 음악들을 기반으로 플레이리스트를 생성할 수 있는 페이지입니다.
+플레이리스트 추가된 음악을 클릭하면 플레이리스트 기반으로 음악을 감상할 수 있습니다.
 
 <br />
 
 ## ⚙ 기술 스택
 
-> skills 폴더에 있는 아이콘을 이용할 수 있습니다.
-
 ### Front-end
 
-<div>
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/JavaScript.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/React.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/JWT.png?raw=true" width="80">
-</div>
+- JavaScript
+- Pug
+- Sass
 
-### Infra
+### Back-end
 
-<div>
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/AWSEC2.png?raw=true" width="80">
-</div>
+- Node.Js
+- Express
+- bcrypt
+- Mongo DB
 
 ### Tools
 
-<div>
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Github.png?raw=true" width="80">
-<img src="https://github.com/yewon-Noh/readme-template/blob/main/skills/Notion.png?raw=true" width="80">
-</div>
+- GitHub
+- Babel
+- Webpack
+- Prettier
 
 <br />
 
-## 🤔 기술적 이슈와 해결 과정
+## 🤔 알게된 것
 
-- CORS 이슈
-  - [Axios message: 'Network Error'(CORS 오류)](https://leeseong010.tistory.com/117)
-- api 호출 시 중복되는 헤더 작업 간소화하기
-  - [axios interceptor 적용하기](https://leeseong010.tistory.com/133)
-- axios 요청하기
-  - [axios delete 요청 시 body에 data 넣는 방법](https://leeseong010.tistory.com/111)
+- Webpack
+
+  - [[유튜브 클론코딩] Webpack](https://gugonggu.tistory.com/20)
+
+- 쿠키와 세션
+  - [쿠키(Cookie)와 세션(Session)](https://gugonggu.tistory.com/10)
+
+<br />
+
+- [개발 포스팅](https://gugonggu.tistory.com/10)
+
+<br />
+
+자바스크립트와 Node.js를 처음 다루다 보니 파일 세분화, 함수형 프로그래밍 등 여러 프로그래밍 패러다임을 이해하지 못한 채 주먹구구식으로 코드를 작성했습니다. 그러나 이러한 시행착오를 통해 **체계화된 구조 설계의 중요성**과 **클린 코드의 필요성**을 깨닫게 되었습니다.
+
+또한, 첫 프로젝트와 첫 언어였던 만큼 여러 문서를 찾아보고 공식 문서를 읽는 법을 익히며 **스스로 문제를 해결하는 능력**을 키울 수 있었습니다.
+
+## 자바스크립트의 전반적인 이해와 실전 적용
+
+이 프로젝트를 통해 저는 자바스크립트의 기본 문법부터 동작 원리까지 폭넓게 학습할 수 있었습니다. 특히 ‘모던 자바스크립트’ 책을 스터디하여 언어의 핵심 개념과 자바스크립트 엔진이 코드를 해석하고 실행하는 원리를 깊이 있게 이해하게 되었습니다.
+
+더불어, Babel, Webpack, Prettier와 같은 도구들을 사용해보여 자바스크립트 프로젝트가 어떻게 구성되고 최적화되는지에 대한 실무적인 지식을 쌓을 수 있었습니다. 이를 통해 프로젝트 파일의 빌드와 번들링 과정, 코드 품질 관리의 중요석을 실감했습니다.
+
+뿐만 아니라, 라이브러리 선택 및 활용 능력도 키울 수 있었습니다. 프로젝트에 적합한 라이브러리를 찾고, 도입하며, 문제를 해결하는 방법을 배우며 실무 개발자로서의 역량을 한층 더 성장시킬 수 있었습니다.
+
+이 모든 과정은 단순히 코드를 작성하는 것을 넘어, 자바스크립트 프로젝트 전반을 설계하고 관리하는 능력을 키우는 소중한 경험이었습니다.
 
 <br />
 
 ## 💁‍♂️ 프로젝트 팀원
 
-|                    Backend                     |                    Frontend                    |
-| :--------------------------------------------: | :--------------------------------------------: |
-| ![](https://github.com/yewon-Noh.png?size=120) | ![](https://github.com/SeongHo-C.png?size=120) |
-|     [노예원](https://github.com/yewon-Noh)     |     [이성호](https://github.com/SeongHo-C)     |
+|                   1인 개발                    |
+| :-------------------------------------------: |
+| ![](https://github.com/gugonggu.png?size=120) |
+|     [정홍천](https://github.com/gugonggu)     |
